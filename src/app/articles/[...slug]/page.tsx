@@ -41,14 +41,14 @@ export async function generateMetadata({
   if (!article) return {};
 
   return {
-    title: `${article.frontmatter.title} | トメピタ`,
+    title: article.frontmatter.title,
     description: article.frontmatter.description,
     alternates: {
       canonical: `/articles/${slugStr}`,
     },
     openGraph: {
       type: "article",
-      title: `${article.frontmatter.title} | トメピタ`,
+      title: article.frontmatter.title,
       description: article.frontmatter.description,
       url: `${BASE_URL}/articles/${slugStr}`,
       publishedTime: article.frontmatter.date,
@@ -57,7 +57,7 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: `${article.frontmatter.title} | トメピタ`,
+      title: article.frontmatter.title,
       description: article.frontmatter.description,
     },
   };
