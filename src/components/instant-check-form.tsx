@@ -197,7 +197,7 @@ export function InstantCheckForm({
     if (!selectedVehicle) return;
     if (selectedParking) {
       router.push(
-        `/check?car=${selectedVehicle.slug}&parking=${selectedParking.slug}`
+        `/parking/${selectedParking.slug}?car=${selectedVehicle.slug}#checker`
       );
     } else {
       router.push(`/car/${selectedVehicle.slug}`);
@@ -269,10 +269,10 @@ export function InstantCheckForm({
           <div className="flex flex-wrap gap-2">
             {[
               { name: "アルファード", slug: "alphard", maker: "トヨタ" },
-              { name: "プリウス", slug: "prius-mechanical-parking-guide", maker: "トヨタ" },
+              { name: "プリウス", slug: "prius", maker: "トヨタ" },
               { name: "ヴォクシー", slug: "voxy", maker: "トヨタ" },
               { name: "ハリアー", slug: "harrier", maker: "トヨタ" },
-              { name: "N-BOX", slug: "n-box-mechanical-parking-guide", maker: "ホンダ" },
+              { name: "N-BOX", slug: "n-box", maker: "ホンダ" },
             ].map((v) => (
               <button
                 key={v.slug}

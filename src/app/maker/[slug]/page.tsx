@@ -58,16 +58,7 @@ export default async function MakerPage({ params }: Props) {
   const maker = await getMakerBySlug(slug);
   if (!maker) notFound();
 
-  const rawModels = await getModelsByMakerSlug(slug);
-
-  // 重複排除（LEFT JOINで複数行になる場合）
-  const modelMap = new Map<number, (typeof rawModels)[number]>();
-  for (const row of rawModels) {
-    if (!modelMap.has(row.id)) {
-      modelMap.set(row.id, row);
-    }
-  }
-  const models = Array.from(modelMap.values());
+  const models = await getModelsByMakerSlug(slug);
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">

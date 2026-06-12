@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Breadcrumb } from "@/components/breadcrumb";
-import { ParkingCard } from "@/components/parking-card";
 import { MatchBadge } from "@/components/match-badge";
 import { DimensionCompare } from "@/components/dimension-compare";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -8,7 +7,7 @@ import {
   getModelBySlug,
   getDimensionsByModelId,
   getParkingLotsByWard,
-  getRestrictionsByParkingLotId,
+  getAllRestrictions,
   getParkingLots,
   getNearbyParkingLots,
 } from "@/lib/queries";
@@ -58,22 +57,44 @@ export default async function SearchPage({ searchParams }: Props) {
     lots = await getParkingLots();
   }
 
+  // 全駐車場の制限を一括取得し、駐車場IDごとにグルーピング（N+1回避）
+  const allRestrictions = await getAllRestrictions();
+  const restrictionsByLot = new Map<number, typeof allRestrictions>();
+  for (const r of allRestrictions) {
+    const list = restrictionsByLot.get(r.parking_lot_id);
+    if (list) {
+      list.push(r);
+    } else {
+      restrictionsByLot.set(r.parking_lot_id, [r]);
+    }
+  }
+
   // 各駐車場の制限と判定
-  const results = await Promise.all(
-    lots.map(async (lot) => {
-      const restrictions = await getRestrictionsByParkingLotId(lot.id);
+  const results = lots.map((lot) => {
+    const restrictions = restrictionsByLot.get(lot.id) ?? [];
 
-      if (!dimension || restrictions.length === 0) {
-        return {
-          lot,
-          restrictions,
-          bestMatch: null,
-          bestRestriction: restrictions[0] ?? null,
-        };
+    if (!dimension || restrictions.length === 0) {
+      return { lot, bestMatch: null };
+    }
+
+    // 最良のマッチングを選択
+    let bestMatch = calculateMatch(
+      {
+        length_mm: dimension.length_mm,
+        width_mm: dimension.width_mm,
+        height_mm: dimension.height_mm,
+        weight_kg: dimension.weight_kg,
+      },
+      {
+        max_length_mm: restrictions[0].max_length_mm,
+        max_width_mm: restrictions[0].max_width_mm,
+        max_height_mm: restrictions[0].max_height_mm,
+        max_weight_kg: restrictions[0].max_weight_kg,
       }
+    );
 
-      // 最良のマッチングを選択
-      let bestMatch = calculateMatch(
+    for (let i = 1; i < restrictions.length; i++) {
+      const match = calculateMatch(
         {
           length_mm: dimension.length_mm,
           width_mm: dimension.width_mm,
@@ -81,38 +102,19 @@ export default async function SearchPage({ searchParams }: Props) {
           weight_kg: dimension.weight_kg,
         },
         {
-          max_length_mm: restrictions[0].max_length_mm,
-          max_width_mm: restrictions[0].max_width_mm,
-          max_height_mm: restrictions[0].max_height_mm,
-          max_weight_kg: restrictions[0].max_weight_kg,
+          max_length_mm: restrictions[i].max_length_mm,
+          max_width_mm: restrictions[i].max_width_mm,
+          max_height_mm: restrictions[i].max_height_mm,
+          max_weight_kg: restrictions[i].max_weight_kg,
         }
       );
-      let bestRestriction = restrictions[0];
-
-      for (let i = 1; i < restrictions.length; i++) {
-        const match = calculateMatch(
-          {
-            length_mm: dimension.length_mm,
-            width_mm: dimension.width_mm,
-            height_mm: dimension.height_mm,
-            weight_kg: dimension.weight_kg,
-          },
-          {
-            max_length_mm: restrictions[i].max_length_mm,
-            max_width_mm: restrictions[i].max_width_mm,
-            max_height_mm: restrictions[i].max_height_mm,
-            max_weight_kg: restrictions[i].max_weight_kg,
-          }
-        );
-        if (matchSortOrder(match.result) < matchSortOrder(bestMatch.result)) {
-          bestMatch = match;
-          bestRestriction = restrictions[i];
-        }
+      if (matchSortOrder(match.result) < matchSortOrder(bestMatch.result)) {
+        bestMatch = match;
       }
+    }
 
-      return { lot, restrictions, bestMatch, bestRestriction };
-    })
-  );
+    return { lot, bestMatch };
+  });
 
   // マッチング結果でソート（結果がある場合）
   if (dimension) {
@@ -160,7 +162,7 @@ export default async function SearchPage({ searchParams }: Props) {
 
       {results.length > 0 ? (
         <div className="space-y-4">
-          {results.map(({ lot, bestMatch, bestRestriction }) => (
+          {results.map(({ lot, bestMatch }) => (
             <Card key={lot.id}>
               <CardHeader>
                 <div className="flex items-center justify-between gap-2">

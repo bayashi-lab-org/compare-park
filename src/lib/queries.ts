@@ -80,7 +80,7 @@ export async function getModelBySlug(slug: string) {
 }
 
 export async function getPopularModelsWithDimensions() {
-  return db
+  const rows = await db
     .select({
       id: models.id,
       name: models.name,
@@ -101,7 +101,14 @@ export async function getPopularModelsWithDimensions() {
     .innerJoin(trims, eq(trims.phase_id, phases.id))
     .innerJoin(dimensions, eq(dimensions.trim_id, trims.id))
     .where(eq(models.is_popular, true))
-    .groupBy(models.id);
+    .orderBy(dimensions.id);
+
+  // モデルごとに代表寸法（dimensions.id 最小 = getDimensionsByModelId と同じ基準）を採用
+  const byModel = new Map<number, (typeof rows)[number]>();
+  for (const row of rows) {
+    if (!byModel.has(row.id)) byModel.set(row.id, row);
+  }
+  return Array.from(byModel.values());
 }
 
 /** 指定モデルの最新世代の開始年を取得する */
@@ -141,6 +148,7 @@ export async function getDimensionsByModelId(modelId: number) {
     .innerJoin(phases, eq(trims.phase_id, phases.id))
     .innerJoin(generations, eq(phases.generation_id, generations.id))
     .where(eq(generations.model_id, modelId))
+    .orderBy(dimensions.id)
     .limit(1);
 
   return result[0] ?? null;
@@ -419,7 +427,7 @@ export async function getMakerBySlug(slug: string) {
 }
 
 export async function getModelsByMakerSlug(makerSlug: string) {
-  return db
+  const rows = await db
     .select({
       id: models.id,
       name: models.name,
@@ -439,7 +447,19 @@ export async function getModelsByMakerSlug(makerSlug: string) {
     .leftJoin(phases, eq(phases.generation_id, generations.id))
     .leftJoin(trims, eq(trims.phase_id, phases.id))
     .leftJoin(dimensions, eq(dimensions.trim_id, trims.id))
-    .where(eq(makers.slug, makerSlug));
+    .where(eq(makers.slug, makerSlug))
+    .orderBy(models.name, dimensions.id);
+
+  // LEFT JOIN による行爆発をモデル単位で重複排除。
+  // 寸法を持つ行を優先し、なければ寸法なしの行を採用する。
+  const byModel = new Map<number, (typeof rows)[number]>();
+  for (const row of rows) {
+    const existing = byModel.get(row.id);
+    if (!existing || (existing.length_mm == null && row.length_mm != null)) {
+      byModel.set(row.id, row);
+    }
+  }
+  return Array.from(byModel.values());
 }
 
 // ---------- Search helpers (lightweight for Combobox) ----------

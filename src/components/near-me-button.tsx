@@ -32,10 +32,14 @@ export function NearMeButton({ className }: NearMeButtonProps) {
       },
       (error) => {
         console.error("Geolocation error:", error);
-        alert("現在地の取得に失敗しました。設定を確認してください。");
+        alert(
+          error.code === error.PERMISSION_DENIED
+            ? "位置情報の利用が許可されていません。ブラウザの設定から位置情報を許可してください。"
+            : "現在地の取得に失敗しました。電波状況を確認して再度お試しください。"
+        );
         setLoading(false);
       },
-      { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 }
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
     );
   };
 

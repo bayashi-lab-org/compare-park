@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { Car } from "lucide-react";
 import { MatchBadge } from "@/components/match-badge";
 import { DimensionCompare } from "@/components/dimension-compare";
@@ -36,11 +37,28 @@ interface InlineParkingCheckerProps {
   vehicles: VehicleDim[];
 }
 
-export function InlineParkingChecker({
+export function InlineParkingChecker(props: InlineParkingCheckerProps) {
+  return (
+    <Suspense fallback={<InlineParkingCheckerInner {...props} />}>
+      <InlineParkingCheckerWithParams {...props} />
+    </Suspense>
+  );
+}
+
+function InlineParkingCheckerWithParams(props: InlineParkingCheckerProps) {
+  const searchParams = useSearchParams();
+  const initialCarSlug = searchParams.get("car");
+  return <InlineParkingCheckerInner {...props} initialCarSlug={initialCarSlug} />;
+}
+
+function InlineParkingCheckerInner({
   restrictions,
   vehicles,
-}: InlineParkingCheckerProps) {
-  const [selected, setSelected] = useState<VehicleDim | null>(null);
+  initialCarSlug,
+}: InlineParkingCheckerProps & { initialCarSlug?: string | null }) {
+  const [selected, setSelected] = useState<VehicleDim | null>(
+    () => vehicles.find((v) => v.slug === initialCarSlug) ?? null
+  );
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
 

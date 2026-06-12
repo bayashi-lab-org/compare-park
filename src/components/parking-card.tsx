@@ -36,6 +36,7 @@ interface ParkingCardProps {
   maxHeightMm?: number | null;
   maxWeightKg?: number | null;
   matchResult?: MatchResult;
+  id?: string;
 }
 
 export function ParkingCard({
@@ -48,9 +49,10 @@ export function ParkingCard({
   maxHeightMm,
   maxWeightKg,
   matchResult,
+  id,
 }: ParkingCardProps) {
   return (
-    <Link href={`/parking/${slug}`} className="block transition-transform hover:scale-[1.02]">
+    <Link id={id} href={`/parking/${slug}`} className="block scroll-mt-20 transition-transform hover:scale-[1.02]">
       <Card className="h-full overflow-hidden">
         {parkingType && parkingTypeImages[parkingType] && (
           <div className="relative h-32 w-full bg-muted/30">

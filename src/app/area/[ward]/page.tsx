@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import Link from "next/link";
 import { Breadcrumb } from "@/components/breadcrumb";
 import { ParkingCard } from "@/components/parking-card";
 import { ParkingMapLoader } from "@/components/parking-map-loader";
@@ -12,7 +11,7 @@ import { JsonLd } from "@/components/json-ld";
 import {
   getParkingLotsByWard,
   getParkingLotsByWardAndSize,
-  getRestrictionsByParkingLotId,
+  getRestrictionsByWard,
   getModelsForSearch,
 } from "@/lib/queries";
 import { TOKYO_WARD_MAP, getWardBySlug } from "@/lib/constants";
@@ -120,25 +119,29 @@ export default async function WardPage({ params, searchParams }: Props) {
       },
     }));
   } else {
-    const lots = await getParkingLotsByWard(decodedWard);
-    lotsWithRestrictions = await Promise.all(
-      lots.map(async (lot) => {
-        const restrictions = await getRestrictionsByParkingLotId(lot.id);
-        const firstRestriction = restrictions[0] ?? null;
-        return {
-          lot: {
-            id: lot.id,
-            name: lot.name,
-            slug: lot.slug,
-            address: lot.address,
-            latitude: lot.latitude,
-            longitude: lot.longitude,
-            parking_type: lot.parking_type,
-          },
-          restriction: firstRestriction,
-        };
-      })
-    );
+    const [lots, wardRestrictions] = await Promise.all([
+      getParkingLotsByWard(decodedWard),
+      getRestrictionsByWard(decodedWard),
+    ]);
+    // 駐車場ごとの代表制限（最初の1件）をマップ化
+    const restrictionByLot = new Map<number, (typeof wardRestrictions)[number]>();
+    for (const r of wardRestrictions) {
+      if (!restrictionByLot.has(r.parking_lot_id)) {
+        restrictionByLot.set(r.parking_lot_id, r);
+      }
+    }
+    lotsWithRestrictions = lots.map((lot) => ({
+      lot: {
+        id: lot.id,
+        name: lot.name,
+        slug: lot.slug,
+        address: lot.address,
+        latitude: lot.latitude,
+        longitude: lot.longitude,
+        parking_type: lot.parking_type,
+      },
+      restriction: restrictionByLot.get(lot.id) ?? null,
+    }));
   }
 
   // マップ用データ整形
@@ -232,6 +235,7 @@ export default async function WardPage({ params, searchParams }: Props) {
           {lotsWithRestrictions.map(({ lot, restriction }) => (
             <ParkingCard
               key={lot.id}
+              id={`parking-${lot.slug}`}
               slug={lot.slug}
               name={lot.name}
               address={lot.address}

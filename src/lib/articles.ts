@@ -52,7 +52,21 @@ function parseArticle(relativePath: string): Article {
   };
 }
 
+// 本番ビルドでは記事一覧を使い回す（車種ページ等から大量に呼ばれるため）。
+// 開発時はキャッシュせず、記事ファイルの編集を即時反映する。
+let articlesCache: Article[] | null = null;
+
 export function getArticles(): Article[] {
+  if (process.env.NODE_ENV !== "production") {
+    return loadArticles();
+  }
+  if (!articlesCache) {
+    articlesCache = loadArticles();
+  }
+  return articlesCache;
+}
+
+function loadArticles(): Article[] {
   const files = getMdxFiles(CONTENT_DIR);
   return files
     .map(parseArticle)

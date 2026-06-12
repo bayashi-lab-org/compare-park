@@ -517,7 +517,7 @@ export default async function ParkingDetailPage({ params }: Props) {
 
           {/* あなたの車は停められる？ */}
           {restrictions.length > 0 && vehiclesForChecker.length > 0 && (
-            <section className="mb-10">
+            <section id="checker" className="mb-10 scroll-mt-20">
               <h2 className="mb-4 text-xl font-bold">あなたの車は停められる？</h2>
               <div className="rounded-lg border bg-muted/30 p-4">
                 <InlineParkingChecker
