@@ -4,9 +4,8 @@ import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { vehicleHref } from "@/lib/vehicle-selection";
 import { useMyCar } from "@/hooks/use-my-car";
-import { Car, ChevronDown, ChevronRight, X, Ruler, Weight, ArrowRight } from "lucide-react";
+import { Car, ChevronDown, ChevronRight, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "./ui/button";
 
 export function HeaderMyCar() {
   const { myCar, isLoaded, removeMyCar } = useMyCar();
@@ -63,40 +62,17 @@ export function HeaderMyCar() {
               <span className="text-sm font-bold">{myCar.name}</span>
             </div>
             
-            {(myCar.widthMm || myCar.heightMm) && (
-              <div className="grid grid-cols-2 gap-2">
-                <div className="rounded-lg bg-muted/50 p-2 text-center">
-                  <div className="mb-1 flex items-center justify-center gap-1 text-[10px] text-muted-foreground">
-                    <Ruler className="size-3" />
-                    全幅
-                  </div>
-                  <div className="text-sm font-bold tabular-nums">
-                    {myCar.widthMm?.toLocaleString() ?? "-"}
-                    <span className="ml-0.5 text-[10px] font-normal">mm</span>
-                  </div>
-                </div>
-                <div className="rounded-lg bg-muted/50 p-2 text-center">
-                  <div className="mb-1 flex items-center justify-center gap-1 text-[10px] text-muted-foreground">
-                    <ArrowRight className="size-3 rotate-90" />
-                    全高
-                  </div>
-                  <div className="text-sm font-bold tabular-nums">
-                    {myCar.heightMm?.toLocaleString() ?? "-"}
-                    <span className="ml-0.5 text-[10px] font-normal">mm</span>
-                  </div>
-                </div>
-              </div>
-            )}
+            <p className="text-xs leading-6 text-muted-foreground">寸法・重量は車種ページの現在の登録値を確認してください。</p>
           </div>
 
-          {myCar.gradeName && <p className="mb-4 text-xs leading-6 text-muted-foreground">{myCar.gradeName}</p>}
+          {myCar.gradeName && <p className="mb-4 text-xs leading-6 text-muted-foreground">保存時のグレード：{myCar.gradeName}</p>}
           <div className="space-y-2">
             <Link
               href={vehicleHref(`/car/${myCar.slug}`, { carSlug: myCar.slug, generationId: myCar.generationId, trimId: myCar.trimId })}
               onClick={() => setIsOpen(false)}
               className="flex w-full items-center justify-between rounded-lg bg-primary/5 px-3 py-2 text-xs font-bold text-primary transition-colors hover:bg-primary/10"
             >
-              車種詳細ページを見る
+              現在のグレード・諸元を確認
               <ChevronRight className="size-3" />
             </Link>
             

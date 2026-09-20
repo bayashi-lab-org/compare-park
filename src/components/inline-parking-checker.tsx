@@ -1,5 +1,7 @@
 "use client";
 
+import { VehicleSpecificationNote } from "@/components/vehicle-specification-note";
+
 import { useEffect, useMemo, useRef, useTransition, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowRight, Loader2, MapPin, Info } from "lucide-react";
@@ -279,6 +281,7 @@ function Checker({
               {explicit ? "選択したグレード" : "代表グレードでの参考判定"}
             </p>
             <p>{gradeLabel(grade)}</p>
+            <VehicleSpecificationNote grade={grade} />
             {!explicit && (
               <p className="text-muted-foreground">
                 実際の世代・グレードを上の選択欄で確認してください。

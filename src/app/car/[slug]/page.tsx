@@ -1,3 +1,4 @@
+import { VehicleSpecificationNote } from "@/components/vehicle-specification-note";
 import {
   resolveVehicleGrade,
   vehicleHref,
@@ -309,6 +310,7 @@ export default async function CarDetailPage({ params, searchParams }: Props) {
               : "代表グレードを表示中 · お乗りのグレードを確認してください"}
           </p>
           <p className="mt-2 text-sm leading-6">{gradeLabel(selectedTrim)}</p>
+          <VehicleSpecificationNote grade={selectedTrim} />
           <dl className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-4">
             {[
               { label: "全長", value: dimension.length_mm, unit: "mm" },
@@ -319,9 +321,9 @@ export default async function CarDetailPage({ params, searchParams }: Props) {
               <div key={item.label}>
                 <dt className="text-xs text-muted-foreground">{item.label}</dt>
                 <dd className="mt-1 text-2xl font-bold tabular-nums">
-                  {item.value?.toLocaleString() ?? "—"}
+                  {item.value?.toLocaleString() ?? "未確認"}
                   <span className="ml-1 text-xs font-normal text-muted-foreground">
-                    {item.unit}
+                    {item.value == null ? "" : item.unit}
                   </span>
                 </dd>
               </div>

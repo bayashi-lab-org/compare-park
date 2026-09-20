@@ -195,7 +195,7 @@ export default async function DestinationCarCheckPage({ params }: Props) {
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">重量</span>
-                <span className="font-bold">{dimension.weight_kg?.toLocaleString()} kg</span>
+                <span className="font-bold">{dimension.weight_kg == null ? "未確認" : `${dimension.weight_kg.toLocaleString()} kg`}</span>
               </div>
               <div className="pt-4">
                 <Link

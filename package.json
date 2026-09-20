@@ -20,7 +20,8 @@
     "test": "node --import tsx --test tests/*.test.ts",
     "check:content": "node scripts/check-content-links.mjs",
     "db:correct-restart": "tsx src/scripts/correct-restart-data.ts",
-    "db:correct-rx": "tsx src/scripts/correct-rx-data.ts"
+    "db:correct-rx": "tsx src/scripts/correct-rx-data.ts",
+    "db:correct-vehicle-audit": "tsx src/scripts/correct-vehicle-audit.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.2.0",

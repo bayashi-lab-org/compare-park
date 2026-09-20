@@ -1,7 +1,7 @@
 "use client";
 
 import { SearchPicker } from "@/components/search-picker";
-import type { VehicleGrade } from "@/lib/vehicle-selection";
+import { phaseLabel, type VehicleGrade } from "@/lib/vehicle-selection";
 
 export function VehicleGradePicker({
   grades,
@@ -45,8 +45,8 @@ export function VehicleGradePicker({
         value={selected ? String(selected.trimId) : undefined}
         options={currentGrades.map((grade) => ({
           id: String(grade.trimId),
-          label: `${grade.trimName} ${grade.driveType ?? ""}`,
-          description: `${grade.phaseName} · 全高 ${grade.heightMm?.toLocaleString() ?? "不明"}mm / ${grade.weightKg?.toLocaleString() ?? "不明"}kg`,
+          label: `${grade.trimName} ${grade.driveType ?? ""} ${grade.transmission ?? ""}`,
+          description: `${phaseLabel(grade.phaseName)} · 全高 ${grade.heightMm == null ? "未確認" : `${grade.heightMm.toLocaleString()}mm`} / 重量 ${grade.weightKg == null ? "未確認" : `${grade.weightKg.toLocaleString()}kg`}`,
         }))}
         onSelect={(id) => {
           const grade = currentGrades.find(

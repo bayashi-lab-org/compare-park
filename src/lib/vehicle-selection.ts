@@ -19,6 +19,8 @@ export interface VehicleGrade {
   widthMm: number | null;
   heightMm: number | null;
   weightKg: number | null;
+  specificationNote?: string | null;
+  sourceUrl?: string | null;
 }
 
 export function resolveVehicleGrade<
@@ -58,12 +60,17 @@ export function vehicleHref(path: string, selection: VehicleSelection): string {
   return `${url.pathname}${url.search}${url.hash}`;
 }
 
+export function phaseLabel(name: string): string {
+  return name === "現行型" ? "登録仕様（年式・装備を確認）" : name;
+}
+
 export function gradeLabel(grade: VehicleGrade): string {
   return [
     grade.generationName,
-    grade.phaseName,
+    phaseLabel(grade.phaseName),
     grade.trimName,
     grade.driveType,
+    grade.transmission,
   ]
     .filter(Boolean)
     .join(" / ");

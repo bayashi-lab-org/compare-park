@@ -15,7 +15,7 @@ export async function GET(
     { grades },
     {
       headers: {
-        "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
+        "Cache-Control": "public, max-age=0, s-maxage=300, stale-while-revalidate=300",
       },
     },
   );

@@ -1,0 +1,1376 @@
+[
+  {
+    "auditId": 4340,
+    "maker": "toyota",
+    "model": "voxy",
+    "generation": "90系 (2022-)",
+    "phase": "現行型",
+    "trim": "S-G 2.0L",
+    "drive": "4WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 4695,
+      "width_mm": 1730,
+      "height_mm": 1895,
+      "weight_kg": 1670
+    },
+    "after": {
+      "length_mm": 4695,
+      "width_mm": 1730,
+      "height_mm": 1925,
+      "weight_kg": 1680
+    },
+    "published": true,
+    "source": "https://toyota.jp/pages/contents/carlineup/archive/voxy/2022-01/pdf/voxy_main_s_202201_202504.pdf",
+    "note": "2022年1月〜2025年改良前・7人乗りの標準装備。メーカーオプションによる重量増加は含みません。4WD/E-Fourの全高は1,925mmです。",
+    "trimAfter": "S-G 2.0L（7人乗り・標準装備）"
+  },
+  {
+    "auditId": 4343,
+    "maker": "toyota",
+    "model": "voxy",
+    "generation": "90系 (2022-)",
+    "phase": "現行型",
+    "trim": "S-Z HV",
+    "drive": "4WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 4695,
+      "width_mm": 1730,
+      "height_mm": 1895,
+      "weight_kg": 1740
+    },
+    "after": {
+      "length_mm": 4695,
+      "width_mm": 1730,
+      "height_mm": 1925,
+      "weight_kg": 1710
+    },
+    "published": true,
+    "source": "https://toyota.jp/pages/contents/carlineup/archive/voxy/2022-01/pdf/voxy_main_s_202201_202504.pdf",
+    "note": "2022年1月〜2025年改良前・7人乗りの標準装備。メーカーオプションによる重量増加は含みません。4WD/E-Fourの全高は1,925mmです。",
+    "trimAfter": "S-Z HV（7人乗り・標準装備）"
+  },
+  {
+    "auditId": 4397,
+    "maker": "honda",
+    "model": "n-box",
+    "generation": "3代目 JF5/JF6 (2023-)",
+    "phase": "現行型",
+    "trim": "ベースグレード",
+    "drive": "4WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 3395,
+      "width_mm": 1475,
+      "height_mm": 1815,
+      "weight_kg": 960
+    },
+    "after": {
+      "length_mm": 3395,
+      "width_mm": 1475,
+      "height_mm": 1815,
+      "weight_kg": 980
+    },
+    "published": true,
+    "source": "https://www.honda.co.jp/factbook/auto/nbox/202409/4240926-n-box.pdf",
+    "note": "2024年9月のベースグレード4WD。"
+  },
+  {
+    "auditId": 4403,
+    "maker": "honda",
+    "model": "n-box",
+    "generation": "3代目 JF5/JF6 (2023-)",
+    "phase": "現行型",
+    "trim": "Custom ターボ",
+    "drive": "4WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 3395,
+      "width_mm": 1475,
+      "height_mm": 1815,
+      "weight_kg": 990
+    },
+    "after": {
+      "length_mm": 3395,
+      "width_mm": 1475,
+      "height_mm": 1815,
+      "weight_kg": 1000
+    },
+    "published": true,
+    "source": "https://www.honda.co.jp/factbook/auto/nbox/202409/4240926-n-box.pdf",
+    "note": "2024年9月CUSTOMターボ4WD。"
+  },
+  {
+    "auditId": 4424,
+    "maker": "honda",
+    "model": "freed",
+    "generation": "3代目 (2024-)",
+    "phase": "現行型",
+    "trim": "e:HEV AIR",
+    "drive": "2WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 4310,
+      "width_mm": 1695,
+      "height_mm": 1755,
+      "weight_kg": 1410
+    },
+    "after": {
+      "length_mm": 4310,
+      "width_mm": 1695,
+      "height_mm": 1755,
+      "weight_kg": 1460
+    },
+    "published": true,
+    "source": "https://www.honda.co.jp/factbook/auto/FREED/202406/4240627-freed.pdf",
+    "note": "2024年6月発売時・6人乗りの標準仕様。5人乗り・7人乗りや追加装備のある車両は、車検証の重量を確認してください。",
+    "trimAfter": "e:HEV AIR（6人乗り）"
+  },
+  {
+    "auditId": 4425,
+    "maker": "honda",
+    "model": "freed",
+    "generation": "3代目 (2024-)",
+    "phase": "現行型",
+    "trim": "e:HEV AIR",
+    "drive": "4WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 4310,
+      "width_mm": 1695,
+      "height_mm": 1780,
+      "weight_kg": 1490
+    },
+    "after": {
+      "length_mm": 4310,
+      "width_mm": 1695,
+      "height_mm": 1780,
+      "weight_kg": 1550
+    },
+    "published": true,
+    "source": "https://www.honda.co.jp/factbook/auto/FREED/202406/4240627-freed.pdf",
+    "note": "2024年6月発売時・6人乗りの標準仕様。5人乗り・7人乗りや追加装備のある車両は、車検証の重量を確認してください。",
+    "trimAfter": "e:HEV AIR（6人乗り）"
+  },
+  {
+    "auditId": 4426,
+    "maker": "honda",
+    "model": "freed",
+    "generation": "3代目 (2024-)",
+    "phase": "現行型",
+    "trim": "e:HEV AIR EX",
+    "drive": "2WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 4310,
+      "width_mm": 1695,
+      "height_mm": 1755,
+      "weight_kg": 1420
+    },
+    "after": {
+      "length_mm": 4310,
+      "width_mm": 1695,
+      "height_mm": 1755,
+      "weight_kg": 1480
+    },
+    "published": true,
+    "source": "https://www.honda.co.jp/factbook/auto/FREED/202406/4240627-freed.pdf",
+    "note": "2024年6月発売時・6人乗りの標準仕様。5人乗り・7人乗りや追加装備のある車両は、車検証の重量を確認してください。",
+    "trimAfter": "e:HEV AIR EX（6人乗り）"
+  },
+  {
+    "auditId": 4427,
+    "maker": "honda",
+    "model": "freed",
+    "generation": "3代目 (2024-)",
+    "phase": "現行型",
+    "trim": "e:HEV AIR EX",
+    "drive": "4WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 4310,
+      "width_mm": 1695,
+      "height_mm": 1780,
+      "weight_kg": 1500
+    },
+    "after": {
+      "length_mm": 4310,
+      "width_mm": 1695,
+      "height_mm": 1780,
+      "weight_kg": 1560
+    },
+    "published": true,
+    "source": "https://www.honda.co.jp/factbook/auto/FREED/202406/4240627-freed.pdf",
+    "note": "2024年6月発売時・6人乗りの標準仕様。5人乗り・7人乗りや追加装備のある車両は、車検証の重量を確認してください。",
+    "trimAfter": "e:HEV AIR EX（6人乗り）"
+  },
+  {
+    "auditId": 4441,
+    "maker": "nissan",
+    "model": "serena",
+    "generation": "C28型 (2022-)",
+    "phase": "現行型",
+    "trim": "X",
+    "drive": "4WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 4690,
+      "width_mm": 1695,
+      "height_mm": 1870,
+      "weight_kg": 1740
+    },
+    "after": {
+      "length_mm": 4690,
+      "width_mm": 1695,
+      "height_mm": 1895,
+      "weight_kg": 1780
+    },
+    "published": true,
+    "source": "https://history.nissan.co.jp/ARCHIVES/PDF/SERENA/C28/20221128/serena_specsheet.pdf",
+    "note": "C28発売期（2022年11月の諸元表）の標準仕様。メーカーオプションで車両重量が増える場合があります。"
+  },
+  {
+    "auditId": 4443,
+    "maker": "nissan",
+    "model": "serena",
+    "generation": "C28型 (2022-)",
+    "phase": "現行型",
+    "trim": "XV",
+    "drive": "4WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 4690,
+      "width_mm": 1695,
+      "height_mm": 1870,
+      "weight_kg": 1750
+    },
+    "after": {
+      "length_mm": 4690,
+      "width_mm": 1695,
+      "height_mm": 1895,
+      "weight_kg": 1790
+    },
+    "published": true,
+    "source": "https://history.nissan.co.jp/ARCHIVES/PDF/SERENA/C28/20221128/serena_specsheet.pdf",
+    "note": "C28発売期（2022年11月の諸元表）の標準仕様。メーカーオプションで車両重量が増える場合があります。"
+  },
+  {
+    "auditId": 4445,
+    "maker": "nissan",
+    "model": "serena",
+    "generation": "C28型 (2022-)",
+    "phase": "現行型",
+    "trim": "ハイウェイスターV",
+    "drive": "4WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 4765,
+      "width_mm": 1715,
+      "height_mm": 1870,
+      "weight_kg": 1760
+    },
+    "after": {
+      "length_mm": 4765,
+      "width_mm": 1715,
+      "height_mm": 1895,
+      "weight_kg": 1790
+    },
+    "published": true,
+    "source": "https://history.nissan.co.jp/ARCHIVES/PDF/SERENA/C28/20221128/serena_specsheet.pdf",
+    "note": "C28発売期（2022年11月の諸元表）の標準仕様。メーカーオプションで車両重量が増える場合があります。"
+  },
+  {
+    "auditId": 4446,
+    "maker": "nissan",
+    "model": "serena",
+    "generation": "C28型 (2022-)",
+    "phase": "現行型",
+    "trim": "e-POWER X",
+    "drive": "2WD",
+    "transmission": "e-POWER",
+    "before": {
+      "length_mm": 4690,
+      "width_mm": 1695,
+      "height_mm": 1870,
+      "weight_kg": 1760
+    },
+    "after": {
+      "length_mm": 4690,
+      "width_mm": 1695,
+      "height_mm": 1870,
+      "weight_kg": 1790
+    },
+    "published": true,
+    "source": "https://history.nissan.co.jp/ARCHIVES/PDF/SERENA/C28/20221128/serena_specsheet.pdf",
+    "note": "C28発売期（2022年11月の諸元表）の標準仕様。メーカーオプションで車両重量が増える場合があります。"
+  },
+  {
+    "auditId": 4447,
+    "maker": "nissan",
+    "model": "serena",
+    "generation": "C28型 (2022-)",
+    "phase": "現行型",
+    "trim": "e-POWER XV",
+    "drive": "2WD",
+    "transmission": "e-POWER",
+    "before": {
+      "length_mm": 4690,
+      "width_mm": 1695,
+      "height_mm": 1870,
+      "weight_kg": 1770
+    },
+    "after": {
+      "length_mm": 4690,
+      "width_mm": 1695,
+      "height_mm": 1870,
+      "weight_kg": 1810
+    },
+    "published": true,
+    "source": "https://history.nissan.co.jp/ARCHIVES/PDF/SERENA/C28/20221128/serena_specsheet.pdf",
+    "note": "C28発売期（2022年11月の諸元表）の標準仕様。メーカーオプションで車両重量が増える場合があります。"
+  },
+  {
+    "auditId": 4448,
+    "maker": "nissan",
+    "model": "serena",
+    "generation": "C28型 (2022-)",
+    "phase": "現行型",
+    "trim": "e-POWER ハイウェイスターV",
+    "drive": "2WD",
+    "transmission": "e-POWER",
+    "before": {
+      "length_mm": 4765,
+      "width_mm": 1715,
+      "height_mm": 1870,
+      "weight_kg": 1790
+    },
+    "after": {
+      "length_mm": 4765,
+      "width_mm": 1715,
+      "height_mm": 1870,
+      "weight_kg": 1810
+    },
+    "published": true,
+    "source": "https://history.nissan.co.jp/ARCHIVES/PDF/SERENA/C28/20221128/serena_specsheet.pdf",
+    "note": "C28発売期（2022年11月の諸元表）の標準仕様。メーカーオプションで車両重量が増える場合があります。"
+  },
+  {
+    "auditId": 4449,
+    "maker": "nissan",
+    "model": "serena",
+    "generation": "C28型 (2022-)",
+    "phase": "現行型",
+    "trim": "e-POWER LUXION",
+    "drive": "2WD",
+    "transmission": "e-POWER",
+    "before": {
+      "length_mm": 4765,
+      "width_mm": 1715,
+      "height_mm": 1885,
+      "weight_kg": 1810
+    },
+    "after": {
+      "length_mm": 4765,
+      "width_mm": 1715,
+      "height_mm": 1885,
+      "weight_kg": 1850
+    },
+    "published": true,
+    "source": "https://history.nissan.co.jp/ARCHIVES/PDF/SERENA/C28/20221128/serena_specsheet.pdf",
+    "note": "C28発売期（2022年11月の諸元表）の標準仕様。メーカーオプションで車両重量が増える場合があります。"
+  },
+  {
+    "auditId": 4495,
+    "maker": "lexus",
+    "model": "nx",
+    "generation": "2代目 (2021-)",
+    "phase": "現行型",
+    "trim": "NX350h",
+    "drive": "2WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 4660,
+      "width_mm": 1865,
+      "height_mm": 1660,
+      "weight_kg": 1720
+    },
+    "after": {
+      "length_mm": 4660,
+      "width_mm": 1865,
+      "height_mm": 1660,
+      "weight_kg": 1730
+    },
+    "published": true,
+    "source": "https://cpo.lexus.jp/resource/pdf/nx_202110.pdf",
+    "note": "2021年10月・NX350h標準仕様。追加装備で車両重量が変わります。"
+  },
+  {
+    "auditId": 4497,
+    "maker": "lexus",
+    "model": "nx",
+    "generation": "2代目 (2021-)",
+    "phase": "現行型",
+    "trim": "NX350",
+    "drive": "AWD",
+    "transmission": "8AT",
+    "before": {
+      "length_mm": 4660,
+      "width_mm": 1865,
+      "height_mm": 1660,
+      "weight_kg": 1740
+    },
+    "after": {
+      "length_mm": 4660,
+      "width_mm": 1865,
+      "height_mm": 1660,
+      "weight_kg": 1780
+    },
+    "published": true,
+    "source": "https://cpo.lexus.jp/resource/pdf/nx_202110.pdf",
+    "note": "2021年10月・F SPORT標準20インチ。18インチ選択時の車両重量は1,760kgです。追加装備で重量が変わります。",
+    "trimAfter": "NX350 F SPORT（20インチ）"
+  },
+  {
+    "auditId": 4502,
+    "maker": "bmw",
+    "model": "x3",
+    "generation": "G45 (2024-)",
+    "phase": "現行型",
+    "trim": "xDrive20d",
+    "drive": "AWD",
+    "transmission": "8AT",
+    "before": {
+      "length_mm": 4755,
+      "width_mm": 1920,
+      "height_mm": 1660,
+      "weight_kg": 1965
+    },
+    "after": {
+      "length_mm": 4755,
+      "width_mm": 1920,
+      "height_mm": 1660,
+      "weight_kg": 1930
+    },
+    "published": true,
+    "source": "https://www.bmw.co.jp/content/dam/bmw/marketJP/bmw_co_jp/pdf/all-models/X/X3/X3_EPL_202504V1.pdf",
+    "note": "2025年4月・日本仕様の標準装備時。パノラマガラスサンルーフ装着時は1,950kgです。",
+    "trimAfter": "20d xDrive M Sport"
+  },
+  {
+    "auditId": 4871,
+    "maker": "daihatsu",
+    "model": "move",
+    "generation": "新型 (2025-)",
+    "phase": "現行型",
+    "trim": "X",
+    "drive": "4WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 3395,
+      "width_mm": 1475,
+      "height_mm": 1655,
+      "weight_kg": 910
+    },
+    "after": {
+      "length_mm": 3395,
+      "width_mm": 1475,
+      "height_mm": 1670,
+      "weight_kg": 910
+    },
+    "published": true,
+    "source": "https://www.daihatsu.co.jp/lineup/move/pdf/specifications.pdf",
+    "note": "2025年発売・X 4WD標準仕様。2WDとは全高が異なります。"
+  },
+  {
+    "auditId": 4366,
+    "maker": "toyota",
+    "model": "yaris",
+    "generation": "初代 (2020-)",
+    "phase": "現行型",
+    "trim": "G 1.5L",
+    "drive": "4WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 3940,
+      "width_mm": 1695,
+      "height_mm": 1500,
+      "weight_kg": 1060
+    },
+    "after": {
+      "length_mm": 3940,
+      "width_mm": 1695,
+      "height_mm": 1515,
+      "weight_kg": 1060
+    },
+    "published": true,
+    "source": "https://toyota.jp/pages/contents/yaris/001_p_001/pdf/spec/yaris_spec_201912.pdf",
+    "note": "2020年発売時の全長3,940mmの仕様。全高は4WD/E-Fourで1,515mmです。重量は装備により異なります。"
+  },
+  {
+    "auditId": 4369,
+    "maker": "toyota",
+    "model": "yaris",
+    "generation": "初代 (2020-)",
+    "phase": "現行型",
+    "trim": "Z HV",
+    "drive": "4WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 3940,
+      "width_mm": 1695,
+      "height_mm": 1500,
+      "weight_kg": 1110
+    },
+    "after": {
+      "length_mm": 3940,
+      "width_mm": 1695,
+      "height_mm": 1515,
+      "weight_kg": 1110
+    },
+    "published": true,
+    "source": "https://toyota.jp/pages/contents/yaris/001_p_001/pdf/spec/yaris_spec_201912.pdf",
+    "note": "2020年発売時の全長3,940mmの仕様。全高は4WD/E-Fourで1,515mmです。重量は装備により異なります。"
+  },
+  {
+    "auditId": 4373,
+    "maker": "toyota",
+    "model": "yaris-cross",
+    "generation": "初代 (2020-)",
+    "phase": "現行型",
+    "trim": "G 1.5L ガソリン",
+    "drive": "4WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 4180,
+      "width_mm": 1765,
+      "height_mm": 1590,
+      "weight_kg": 1180
+    },
+    "after": {
+      "length_mm": 4180,
+      "width_mm": 1765,
+      "height_mm": 1590,
+      "weight_kg": 1210
+    },
+    "published": true,
+    "source": "https://toyota.jp/ucar/catalog/brand-TOYOTA/car-YARIS_CROSS/202008/10130869/",
+    "note": "2020年ガソリンG 4WD、登録1180kgとの差。"
+  },
+  {
+    "auditId": 4381,
+    "maker": "toyota",
+    "model": "yaris-cross",
+    "generation": "初代 (2020-)",
+    "phase": "現行型",
+    "trim": "Z HV E-Four",
+    "drive": "4WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 4180,
+      "width_mm": 1765,
+      "height_mm": 1590,
+      "weight_kg": 1260
+    },
+    "after": {
+      "length_mm": 4180,
+      "width_mm": 1765,
+      "height_mm": 1590,
+      "weight_kg": 1270
+    },
+    "published": true,
+    "source": "https://toyota.jp/ucar/catalog/brand-TOYOTA/car-YARIS_CROSS/202008/10130861/",
+    "note": "2020年HYBRID Z E-Four、登録1260kgとの差。"
+  },
+  {
+    "auditId": 4473,
+    "maker": "subaru",
+    "model": "forester",
+    "generation": "6代目 (2024-)",
+    "phase": "現行型",
+    "trim": "Touring",
+    "drive": "AWD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 4655,
+      "width_mm": 1830,
+      "height_mm": 1730,
+      "weight_kg": 1600
+    },
+    "after": {
+      "length_mm": null,
+      "width_mm": null,
+      "height_mm": null,
+      "weight_kg": null
+    },
+    "published": false,
+    "source": "https://www.subaru.co.jp/news/2025_04_17_164724/",
+    "note": "6代目の日本発売は2025年4月。グレードはSPORT/X-BREAK S:HEV/Premium S:HEV（EXあり）。DBのTouring/Advance/S Limitedと世代の組合せが不整合。現行型の重量1600〜1630kgも公式1640〜1780kgの範囲外。"
+  },
+  {
+    "auditId": 4474,
+    "maker": "subaru",
+    "model": "forester",
+    "generation": "6代目 (2024-)",
+    "phase": "現行型",
+    "trim": "X-BREAK",
+    "drive": "AWD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 4655,
+      "width_mm": 1830,
+      "height_mm": 1730,
+      "weight_kg": 1610
+    },
+    "after": {
+      "length_mm": null,
+      "width_mm": null,
+      "height_mm": null,
+      "weight_kg": null
+    },
+    "published": false,
+    "source": "https://www.subaru.co.jp/news/2025_04_17_164724/",
+    "note": "6代目の日本発売は2025年4月。グレードはSPORT/X-BREAK S:HEV/Premium S:HEV（EXあり）。DBのTouring/Advance/S Limitedと世代の組合せが不整合。現行型の重量1600〜1630kgも公式1640〜1780kgの範囲外。"
+  },
+  {
+    "auditId": 4475,
+    "maker": "subaru",
+    "model": "forester",
+    "generation": "6代目 (2024-)",
+    "phase": "現行型",
+    "trim": "Advance",
+    "drive": "AWD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 4655,
+      "width_mm": 1830,
+      "height_mm": 1730,
+      "weight_kg": 1620
+    },
+    "after": {
+      "length_mm": null,
+      "width_mm": null,
+      "height_mm": null,
+      "weight_kg": null
+    },
+    "published": false,
+    "source": "https://www.subaru.co.jp/news/2025_04_17_164724/",
+    "note": "6代目の日本発売は2025年4月。グレードはSPORT/X-BREAK S:HEV/Premium S:HEV（EXあり）。DBのTouring/Advance/S Limitedと世代の組合せが不整合。現行型の重量1600〜1630kgも公式1640〜1780kgの範囲外。"
+  },
+  {
+    "auditId": 4476,
+    "maker": "subaru",
+    "model": "forester",
+    "generation": "6代目 (2024-)",
+    "phase": "現行型",
+    "trim": "S Limited",
+    "drive": "AWD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 4655,
+      "width_mm": 1830,
+      "height_mm": 1730,
+      "weight_kg": 1630
+    },
+    "after": {
+      "length_mm": null,
+      "width_mm": null,
+      "height_mm": null,
+      "weight_kg": null
+    },
+    "published": false,
+    "source": "https://www.subaru.co.jp/news/2025_04_17_164724/",
+    "note": "6代目の日本発売は2025年4月。グレードはSPORT/X-BREAK S:HEV/Premium S:HEV（EXあり）。DBのTouring/Advance/S Limitedと世代の組合せが不整合。現行型の重量1600〜1630kgも公式1640〜1780kgの範囲外。"
+  },
+  {
+    "auditId": 4859,
+    "maker": "suzuki",
+    "model": "spacia",
+    "generation": "3代目 MK系 (2023-)",
+    "phase": "現行型",
+    "trim": "カスタム HYBRID GS ターボ",
+    "drive": "2WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 3395,
+      "width_mm": 1475,
+      "height_mm": 1785,
+      "weight_kg": 910
+    },
+    "after": {
+      "length_mm": null,
+      "width_mm": null,
+      "height_mm": null,
+      "weight_kg": null
+    },
+    "published": false,
+    "source": "https://www.suzuki.co.jp/release/a/2023/1109/",
+    "note": "3代目カスタムにHYBRID GS ターボはない。GSはNA、ターボはXSターボ。どちらか確定後に重量も修正。"
+  },
+  {
+    "auditId": 4564,
+    "maker": "honda",
+    "model": "cr-v",
+    "generation": "6代目 (2024-)",
+    "phase": "現行型",
+    "trim": "e:HEV RS",
+    "drive": "2WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 4700,
+      "width_mm": 1865,
+      "height_mm": 1680,
+      "weight_kg": 1750
+    },
+    "after": {
+      "length_mm": 4700,
+      "width_mm": 1865,
+      "height_mm": 1680,
+      "weight_kg": 1750
+    },
+    "published": true,
+    "source": "https://global.honda/jp/news/2026/4260226-cr-v.html",
+    "note": "2026年2月発売の日本仕様e:HEV RS。2024年発売のe:FCEVとは異なります。",
+    "generationAfter": "6代目 e:HEV (2026-)",
+    "startYearBefore": 2024,
+    "startYearAfter": 2026
+  },
+  {
+    "auditId": 4565,
+    "maker": "honda",
+    "model": "cr-v",
+    "generation": "6代目 (2024-)",
+    "phase": "現行型",
+    "trim": "e:HEV RS",
+    "drive": "4WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 4700,
+      "width_mm": 1865,
+      "height_mm": 1690,
+      "weight_kg": 1800
+    },
+    "after": {
+      "length_mm": 4700,
+      "width_mm": 1865,
+      "height_mm": 1690,
+      "weight_kg": 1800
+    },
+    "published": true,
+    "source": "https://global.honda/jp/news/2026/4260226-cr-v.html",
+    "note": "2026年2月発売の日本仕様e:HEV RS。2024年発売のe:FCEVとは異なります。",
+    "generationAfter": "6代目 e:HEV (2026-)",
+    "startYearBefore": 2024,
+    "startYearAfter": 2026
+  },
+  {
+    "auditId": 4650,
+    "maker": "ferrari",
+    "model": "purosangue",
+    "generation": "初代 (2023-)",
+    "phase": "現行型",
+    "trim": "Purosangue V12",
+    "drive": "AWD",
+    "transmission": "8AT",
+    "before": {
+      "length_mm": 4973,
+      "width_mm": 2028,
+      "height_mm": 1589,
+      "weight_kg": 2033
+    },
+    "after": {
+      "length_mm": 4973,
+      "width_mm": 2028,
+      "height_mm": 1589,
+      "weight_kg": null
+    },
+    "published": true,
+    "source": "https://cdn.ferrari.com/cms/network/media/pdf/CS_Ferrari_Purosangue_EN.pdf",
+    "note": "メーカー公表値は乾燥重量のため、車両重量は未確認です。車検証の重量と施設の制限を確認してください。"
+  },
+  {
+    "auditId": 4663,
+    "maker": "lamborghini",
+    "model": "revuelto",
+    "generation": "初代 (2024-)",
+    "phase": "現行型",
+    "trim": "レヴエルト",
+    "drive": "AWD",
+    "transmission": "8DCT",
+    "before": {
+      "length_mm": 4947,
+      "width_mm": 2033,
+      "height_mm": 1160,
+      "weight_kg": 1772
+    },
+    "after": {
+      "length_mm": 4947,
+      "width_mm": 2033,
+      "height_mm": 1160,
+      "weight_kg": null
+    },
+    "published": true,
+    "source": "https://www.lamborghini.com/sites/it-en/files/DAM/lamborghini/facelift_2019/model_detail/revuelto/2024/brochure/07_23/REVUELTO_DIGITAL_BROCHURE_EN_2024.pdf",
+    "note": "メーカー公表値は乾燥重量のため、車両重量は未確認です。車検証の重量と施設の制限を確認してください。"
+  },
+  {
+    "auditId": 4667,
+    "maker": "lamborghini",
+    "model": "huracan",
+    "generation": "EVO (2019-2024)",
+    "phase": "前期型",
+    "trim": "テクニカ",
+    "drive": "RWD",
+    "transmission": "7DCT",
+    "before": {
+      "length_mm": 4567,
+      "width_mm": 1933,
+      "height_mm": 1165,
+      "weight_kg": 1379
+    },
+    "after": {
+      "length_mm": 4567,
+      "width_mm": 1933,
+      "height_mm": 1165,
+      "weight_kg": null
+    },
+    "published": true,
+    "source": "https://www.lamborghini.com/sites/it-en/files/DAM/lamborghini/facelift_2019/model_detail/huracan/tecnica/2024/07_22_brochure/Lamborghini%20Hurac%C3%A1n%20Tecnica_ES_WCAG.pdf",
+    "note": "メーカー公表値は乾燥重量のため、車両重量は未確認です。車検証の重量と施設の制限を確認してください。"
+  },
+  {
+    "auditId": 4668,
+    "maker": "lamborghini",
+    "model": "temerario",
+    "generation": "初代 (2025-)",
+    "phase": "現行型",
+    "trim": "テメラリオ",
+    "drive": "AWD",
+    "transmission": "8DCT",
+    "before": {
+      "length_mm": 4706,
+      "width_mm": 1996,
+      "height_mm": 1201,
+      "weight_kg": 1690
+    },
+    "after": {
+      "length_mm": 4706,
+      "width_mm": 1996,
+      "height_mm": 1201,
+      "weight_kg": null
+    },
+    "published": true,
+    "source": "https://www.lamborghini.com/en-en/news/lamborghini-temerario-authentic-fuoriclasse",
+    "note": "メーカー公表値は乾燥重量のため、車両重量は未確認です。車検証の重量と施設の制限を確認してください。"
+  },
+  {
+    "auditId": 4687,
+    "maker": "ferrari",
+    "model": "12-cilindri",
+    "generation": "初代 (2024-)",
+    "phase": "現行型",
+    "trim": "12チリンドリ",
+    "drive": "RWD",
+    "transmission": "8DCT",
+    "before": {
+      "length_mm": 4733,
+      "width_mm": 2176,
+      "height_mm": 1292,
+      "weight_kg": 1560
+    },
+    "after": {
+      "length_mm": 4733,
+      "width_mm": 2176,
+      "height_mm": 1292,
+      "weight_kg": null
+    },
+    "published": true,
+    "source": "https://www.ferrari.com/content/dam/ferrari-fcom/old/pdf/CS_Ferrari_12Cilindri_gbr.pdf",
+    "note": "メーカー公表値は乾燥重量のため、車両重量は未確認です。車検証の重量と施設の制限を確認してください。"
+  },
+  {
+    "auditId": 4498,
+    "maker": "lexus",
+    "model": "nx",
+    "generation": "2代目 (2021-)",
+    "phase": "現行型",
+    "trim": "NX450h+ PHEV",
+    "drive": "AWD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 4660,
+      "width_mm": 1865,
+      "height_mm": 1660,
+      "weight_kg": 1990
+    },
+    "after": {
+      "length_mm": 4660,
+      "width_mm": 1865,
+      "height_mm": 1660,
+      "weight_kg": 1990
+    },
+    "published": true,
+    "source": "https://cpo.lexus.jp/resource/pdf/nx_202110.pdf",
+    "note": "2021年10月・18インチ選択時の車両重量1,990kg。標準20インチは2,010kgです。追加装備で重量が変わります。",
+    "trimAfter": "NX450h+ PHEV（18インチ）"
+  },
+  {
+    "auditId": 5026,
+    "maker": "subaru",
+    "model": "impreza",
+    "generation": "GU系 (2023-)",
+    "phase": "現行型",
+    "trim": "ST FF",
+    "drive": "2WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 4475,
+      "width_mm": 1780,
+      "height_mm": 1450,
+      "weight_kg": 1380
+    },
+    "after": {
+      "length_mm": 4475,
+      "width_mm": 1780,
+      "height_mm": 1450,
+      "weight_kg": 1380
+    },
+    "published": true,
+    "source": "https://www.subaru.co.jp/pdf/news/2023_0420_1_2023-04-19-132902.pdf",
+    "note": "2023年4月の発売資料の仕様。全高1,450mmはルーフアンテナを倒した状態です。シャークフィンアンテナ装着車は+30mm。後年の仕様には当てはまりません。"
+  },
+  {
+    "auditId": 5027,
+    "maker": "subaru",
+    "model": "impreza",
+    "generation": "GU系 (2023-)",
+    "phase": "現行型",
+    "trim": "ST AWD",
+    "drive": "4WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 4475,
+      "width_mm": 1780,
+      "height_mm": 1450,
+      "weight_kg": 1420
+    },
+    "after": {
+      "length_mm": 4475,
+      "width_mm": 1780,
+      "height_mm": 1450,
+      "weight_kg": 1420
+    },
+    "published": true,
+    "source": "https://www.subaru.co.jp/pdf/news/2023_0420_1_2023-04-19-132902.pdf",
+    "note": "2023年4月の発売資料の仕様。全高1,450mmはルーフアンテナを倒した状態です。シャークフィンアンテナ装着車は+30mm。後年の仕様には当てはまりません。"
+  },
+  {
+    "auditId": 4619,
+    "maker": "suzuki",
+    "model": "jimny",
+    "generation": "4代目 JB64W (2018-)",
+    "phase": "現行型",
+    "trim": "XC",
+    "drive": "4WD",
+    "transmission": "5MT",
+    "before": {
+      "length_mm": 3395,
+      "width_mm": 1475,
+      "height_mm": 1725,
+      "weight_kg": 1040
+    },
+    "after": {
+      "length_mm": 3395,
+      "width_mm": 1475,
+      "height_mm": 1725,
+      "weight_kg": 1030
+    },
+    "published": true,
+    "source": "https://www.suzuki.co.jp/suzuki_digital_library/pdf/1_auto/jimny/140.pdf",
+    "note": "2018年7月仕様。全高1,725mmはルーフアンテナを折り畳んだ状態です。"
+  },
+  {
+    "auditId": 4618,
+    "maker": "suzuki",
+    "model": "jimny",
+    "generation": "4代目 JB64W (2018-)",
+    "phase": "現行型",
+    "trim": "XC",
+    "drive": "4WD",
+    "transmission": "4AT",
+    "before": {
+      "length_mm": 3395,
+      "width_mm": 1475,
+      "height_mm": 1725,
+      "weight_kg": 1040
+    },
+    "after": {
+      "length_mm": 3395,
+      "width_mm": 1475,
+      "height_mm": 1725,
+      "weight_kg": 1040
+    },
+    "published": true,
+    "source": "https://www.suzuki.co.jp/suzuki_digital_library/pdf/1_auto/jimny/140.pdf",
+    "note": "2018年7月仕様。全高1,725mmはルーフアンテナを折り畳んだ状態です。"
+  },
+  {
+    "auditId": 4419,
+    "maker": "honda",
+    "model": "freed",
+    "generation": "3代目 (2024-)",
+    "phase": "現行型",
+    "trim": "AIR",
+    "drive": "4WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 4310,
+      "width_mm": 1695,
+      "height_mm": 1780,
+      "weight_kg": 1440
+    },
+    "after": {
+      "length_mm": 4310,
+      "width_mm": 1695,
+      "height_mm": 1780,
+      "weight_kg": 1460
+    },
+    "published": true,
+    "source": "https://www.honda.co.jp/factbook/auto/FREED/202406/4240627-freed.pdf",
+    "note": "2024年6月発売時・6人乗りの標準仕様。5人乗り・7人乗りや追加装備のある車両は、車検証の重量を確認してください。",
+    "trimAfter": "AIR（6人乗り）"
+  },
+  {
+    "auditId": 4421,
+    "maker": "honda",
+    "model": "freed",
+    "generation": "3代目 (2024-)",
+    "phase": "現行型",
+    "trim": "AIR EX",
+    "drive": "4WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 4310,
+      "width_mm": 1695,
+      "height_mm": 1780,
+      "weight_kg": 1450
+    },
+    "after": {
+      "length_mm": 4310,
+      "width_mm": 1695,
+      "height_mm": 1780,
+      "weight_kg": 1470
+    },
+    "published": true,
+    "source": "https://www.honda.co.jp/factbook/auto/FREED/202406/4240627-freed.pdf",
+    "note": "2024年6月発売時・6人乗りの標準仕様。5人乗り・7人乗りや追加装備のある車両は、車検証の重量を確認してください。",
+    "trimAfter": "AIR EX（6人乗り）"
+  },
+  {
+    "auditId": 4428,
+    "maker": "honda",
+    "model": "freed",
+    "generation": "3代目 (2024-)",
+    "phase": "現行型",
+    "trim": "e:HEV CROSSTAR",
+    "drive": "2WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 4310,
+      "width_mm": 1720,
+      "height_mm": 1755,
+      "weight_kg": 1440
+    },
+    "after": {
+      "length_mm": 4310,
+      "width_mm": 1720,
+      "height_mm": 1755,
+      "weight_kg": 1490
+    },
+    "published": true,
+    "source": "https://www.honda.co.jp/factbook/auto/FREED/202406/4240627-freed.pdf",
+    "note": "2024年6月発売時・6人乗りの標準仕様。5人乗り・7人乗りや追加装備のある車両は、車検証の重量を確認してください。",
+    "trimAfter": "e:HEV CROSSTAR（6人乗り）"
+  },
+  {
+    "auditId": 4429,
+    "maker": "honda",
+    "model": "freed",
+    "generation": "3代目 (2024-)",
+    "phase": "現行型",
+    "trim": "e:HEV CROSSTAR",
+    "drive": "4WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 4310,
+      "width_mm": 1720,
+      "height_mm": 1780,
+      "weight_kg": 1520
+    },
+    "after": {
+      "length_mm": 4310,
+      "width_mm": 1720,
+      "height_mm": 1780,
+      "weight_kg": 1580
+    },
+    "published": true,
+    "source": "https://www.honda.co.jp/factbook/auto/FREED/202406/4240627-freed.pdf",
+    "note": "2024年6月発売時・6人乗りの標準仕様。5人乗り・7人乗りや追加装備のある車両は、車検証の重量を確認してください。",
+    "trimAfter": "e:HEV CROSSTAR（6人乗り）"
+  },
+  {
+    "auditId": 4383,
+    "maker": "toyota",
+    "model": "prius",
+    "generation": "60系 5代目 (2023-)",
+    "phase": "現行型",
+    "trim": "G HV",
+    "drive": "2WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 4600,
+      "width_mm": 1780,
+      "height_mm": 1420,
+      "weight_kg": 1360
+    },
+    "after": {
+      "length_mm": 4600,
+      "width_mm": 1780,
+      "height_mm": 1430,
+      "weight_kg": 1400
+    },
+    "published": true,
+    "source": "https://toyota.jp/pages/contents/carlineup/archive/prius/2024-03/pdf/prius_main_s_202403.pdf",
+    "note": "2024年3月仕様・標準19インチ。17インチ選択車は全高・重量が異なります。メーカーオプションによる重量増加は含みません。",
+    "trimAfter": "G HV（19インチ）"
+  },
+  {
+    "auditId": 4384,
+    "maker": "toyota",
+    "model": "prius",
+    "generation": "60系 5代目 (2023-)",
+    "phase": "現行型",
+    "trim": "G HV",
+    "drive": "4WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 4600,
+      "width_mm": 1780,
+      "height_mm": 1420,
+      "weight_kg": 1420
+    },
+    "after": {
+      "length_mm": 4600,
+      "width_mm": 1780,
+      "height_mm": 1430,
+      "weight_kg": 1460
+    },
+    "published": true,
+    "source": "https://toyota.jp/pages/contents/carlineup/archive/prius/2024-03/pdf/prius_main_s_202403.pdf",
+    "note": "2024年3月仕様・標準19インチ。17インチ選択車は全高・重量が異なります。メーカーオプションによる重量増加は含みません。",
+    "trimAfter": "G HV（19インチ）"
+  },
+  {
+    "auditId": 4385,
+    "maker": "toyota",
+    "model": "prius",
+    "generation": "60系 5代目 (2023-)",
+    "phase": "現行型",
+    "trim": "Z HV",
+    "drive": "2WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 4600,
+      "width_mm": 1780,
+      "height_mm": 1430,
+      "weight_kg": 1400
+    },
+    "after": {
+      "length_mm": 4600,
+      "width_mm": 1780,
+      "height_mm": 1430,
+      "weight_kg": 1420
+    },
+    "published": true,
+    "source": "https://toyota.jp/pages/contents/carlineup/archive/prius/2024-03/pdf/prius_main_s_202403.pdf",
+    "note": "2024年3月仕様・標準19インチ。17インチ選択車は全高・重量が異なります。メーカーオプションによる重量増加は含みません。",
+    "trimAfter": "Z HV（19インチ）"
+  },
+  {
+    "auditId": 4681,
+    "maker": "ferrari",
+    "model": "488",
+    "generation": "GTB/Spider (2015-2019)",
+    "phase": "前期型",
+    "trim": "488 Pista",
+    "drive": "RWD",
+    "transmission": "7DCT",
+    "before": {
+      "length_mm": 4605,
+      "width_mm": 1975,
+      "height_mm": 1206,
+      "weight_kg": 1280
+    },
+    "after": {
+      "length_mm": 4605,
+      "width_mm": 1975,
+      "height_mm": 1206,
+      "weight_kg": null
+    },
+    "published": true,
+    "source": "https://www.ferrari.com/content/dam/ferrari-fcom/old/pdf/cs_ferrari_488_pista_geneva_gbr.pdf",
+    "note": "メーカー公表値は乾燥重量のため、車両重量は未確認です。車検証の重量と施設の制限を確認してください。"
+  },
+  {
+    "auditId": 4616,
+    "maker": "subaru",
+    "model": "crosstrek",
+    "generation": "初代 GU系 (2022-)",
+    "phase": "現行型",
+    "trim": "Touring",
+    "drive": "AWD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 4480,
+      "width_mm": 1800,
+      "height_mm": 1575,
+      "weight_kg": 1600
+    },
+    "after": {
+      "length_mm": 4480,
+      "width_mm": 1800,
+      "height_mm": 1575,
+      "weight_kg": 1600
+    },
+    "published": true,
+    "source": "https://scdam.subaru.jp/20241108/20241108171116crosstrek_specifications.pdf",
+    "note": "2024年12月の詳細諸元。全高1,575mmはシャークフィンアンテナを含み、ルーフレール装着時は+5mm。後年の装備変更にも注意してください。"
+  },
+  {
+    "auditId": 4617,
+    "maker": "subaru",
+    "model": "crosstrek",
+    "generation": "初代 GU系 (2022-)",
+    "phase": "現行型",
+    "trim": "Limited",
+    "drive": "AWD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 4480,
+      "width_mm": 1800,
+      "height_mm": 1575,
+      "weight_kg": 1610
+    },
+    "after": {
+      "length_mm": 4480,
+      "width_mm": 1800,
+      "height_mm": 1575,
+      "weight_kg": 1610
+    },
+    "published": true,
+    "source": "https://scdam.subaru.jp/20241108/20241108171116crosstrek_specifications.pdf",
+    "note": "2024年12月の詳細諸元。全高1,575mmはシャークフィンアンテナを含み、ルーフレール装着時は+5mm。後年の装備変更にも注意してください。"
+  },
+  {
+    "auditId": 4844,
+    "maker": "honda",
+    "model": "civic",
+    "generation": "11代目 FL系 (2021-)",
+    "phase": "現行型",
+    "trim": "e:HEV",
+    "drive": "2WD",
+    "transmission": "e:HEV",
+    "before": {
+      "length_mm": 4560,
+      "width_mm": 1800,
+      "height_mm": 1410,
+      "weight_kg": 1460
+    },
+    "after": {
+      "length_mm": 4560,
+      "width_mm": 1800,
+      "height_mm": 1415,
+      "weight_kg": 1460
+    },
+    "published": true,
+    "source": "https://www.honda.co.jp/CIVIC/common/pdf/civic_spec_list.pdf",
+    "note": "全長4,560mmの改良後e:HEV LX・標準仕様。改良前の全長4,550mm仕様とは異なります。",
+    "trimAfter": "e:HEV LX"
+  },
+  {
+    "auditId": 4841,
+    "maker": "honda",
+    "model": "fit",
+    "generation": "4代目 GR系 (2020-)",
+    "phase": "現行型",
+    "trim": "CROSSTAR e:HEV",
+    "drive": "2WD",
+    "transmission": "e:HEV",
+    "before": {
+      "length_mm": 4095,
+      "width_mm": 1725,
+      "height_mm": 1565,
+      "weight_kg": 1210
+    },
+    "after": {
+      "length_mm": 4095,
+      "width_mm": 1725,
+      "height_mm": 1570,
+      "weight_kg": 1210
+    },
+    "published": true,
+    "source": "https://www.honda.co.jp/Fit/common/pdf/fit_spec_list.pdf",
+    "note": "全長4,095mmのe:HEV CROSSTAR FF・標準仕様。全高は1,570mmです。"
+  },
+  {
+    "auditId": 4503,
+    "maker": "bmw",
+    "model": "x3",
+    "generation": "G45 (2024-)",
+    "phase": "現行型",
+    "trim": "xDrive30e PHEV",
+    "drive": "AWD",
+    "transmission": "8AT",
+    "before": {
+      "length_mm": 4755,
+      "width_mm": 1920,
+      "height_mm": 1660,
+      "weight_kg": 2195
+    },
+    "after": {
+      "length_mm": null,
+      "width_mm": null,
+      "height_mm": null,
+      "weight_kg": null
+    },
+    "published": false,
+    "source": "https://www.bmw.co.jp/content/dam/bmw/marketJP/bmw_co_jp/pdf/all-models/X/X3/X3_EPL_202504V1.pdf",
+    "note": "登録G45 xDrive30e PHEVは参照した日本向け価格・諸元表に掲載なし。世界向けグレードと日本仕様の区別を確認。不存在と断定せず、日本での対象仕様特定待ち。"
+  },
+  {
+    "auditId": 4342,
+    "maker": "toyota",
+    "model": "voxy",
+    "generation": "90系 (2022-)",
+    "phase": "現行型",
+    "trim": "S-Z HV",
+    "drive": "2WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 4695,
+      "width_mm": 1730,
+      "height_mm": 1895,
+      "weight_kg": 1690
+    },
+    "after": {
+      "length_mm": 4695,
+      "width_mm": 1730,
+      "height_mm": 1895,
+      "weight_kg": 1670
+    },
+    "published": true,
+    "source": "https://toyota.jp/pages/contents/carlineup/archive/voxy/2022-01/pdf/voxy_main_s_202201_202504.pdf",
+    "note": "2022年1月〜2025年改良前・7人乗りの標準装備。メーカーオプションによる重量増加は含みません。4WD/E-Fourの全高は1,925mmです。",
+    "trimAfter": "S-Z HV（7人乗り・標準装備）"
+  }
+]

@@ -1,3 +1,4 @@
+import { correctedVehicleSeeds } from "../../lib/vehicle-audit-data";
 import { db } from "../index";
 import {
   makers,
@@ -32,8 +33,11 @@ interface CarSeed {
   lengthMm: number;
   widthMm: number;
   heightMm: number;
-  weightKg: number;
-  minTurningRadiusM: number;
+  weightKg: number | null;
+  specificationNote?: string;
+  sourceUrl?: string;
+  phaseName?: string;
+  minTurningRadiusM: number | null;
   existingModel?: boolean;
 }
 
@@ -459,7 +463,7 @@ const mini3doorBase = { ...miniBase, modelName: "MINI 3ドア", modelSlug: "mini
 const mini5doorBase = { ...miniBase, modelName: "MINI 5ドア", modelSlug: "mini-5door", bodyType: "compact" as const, generationName: "F65 (2024-)", startYear: 2024 };
 const miniCountrymanBase = { ...miniBase, modelName: "MINI カントリーマン", modelSlug: "mini-countryman", bodyType: "suv" as const, generationName: "U25 (2024-)", startYear: 2024 };
 
-const carData: CarSeed[] = [
+const rawCarData: CarSeed[] = [
   // ============================================================
   // トヨタ アルファード 40系 (2023-) — 2026年6月仕様・標準装備。公式諸元: https://toyota.jp/pages/contents/alphard/004_p_001/pdf/alphard_spec_202606.pdf
   // ============================================================
@@ -4403,6 +4407,8 @@ const parkingData: ParkingLotSeed[] = [
 // ============================================================
 // Seed 実行
 // ============================================================
+const carData = correctedVehicleSeeds(rawCarData);
+
 async function seed() {
   console.log("--- Seed開始 ---");
 
@@ -4506,7 +4512,7 @@ async function seed() {
       generationId = generation.id;
       generationIdMap.set(genKey, generationId);
 
-      const phaseName = car.endYear ? "前期型" : "現行型";
+      const phaseName = car.phaseName ?? (car.endYear ? "前期型" : "現行型");
       const phase = await db
         .insert(phases)
         .values({
@@ -4540,6 +4546,8 @@ async function seed() {
         height_mm: car.heightMm,
         weight_kg: car.weightKg,
         min_turning_radius_m: car.minTurningRadiusM,
+        specification_note: car.specificationNote,
+        source_url: car.sourceUrl,
       })
       .run();
 

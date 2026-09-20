@@ -14,7 +14,10 @@ import {
 import { eq, and, like, notLike, gte, sql } from "drizzle-orm";
 import { NON_CAR_PARKING_TERMS } from "./parking-data-quality";
 
-// 収集済みデータに二輪専用施設が残っていても、全ての公開経路で乗用車候補から除外する。
+// 仕様を特定できない旧登録を、適合判定や選択候補へ出さない。
+const publishedDimension = eq(dimensions.is_published, true);
+
+// 全ての公開経路で二輪専用施設を乗用車候補から除外する。
 export const carParkingCondition = and(
   ...NON_CAR_PARKING_TERMS.map((term) => notLike(parkingLots.name, `%${term}%`))
 );
@@ -106,10 +109,10 @@ export async function getPopularModelsWithDimensions() {
     .innerJoin(phases, eq(phases.generation_id, generations.id))
     .innerJoin(trims, eq(trims.phase_id, phases.id))
     .innerJoin(dimensions, eq(dimensions.trim_id, trims.id))
-    .where(eq(models.is_popular, true))
-    .orderBy(dimensions.id);
+    .where(and(eq(models.is_popular, true), publishedDimension))
+    .orderBy(models.id, sql`${generations.start_year} DESC`, dimensions.id);
 
-  // モデルごとに代表寸法（dimensions.id 最小 = getDimensionsByModelId と同じ基準）を採用
+  // 最新の公開世代を優先し、同一世代では寸法ID順で代表グレードを採用。
   const byModel = new Map<number, (typeof rows)[number]>();
   for (const row of rows) {
     if (!byModel.has(row.id)) byModel.set(row.id, row);
@@ -122,7 +125,10 @@ export async function getLatestGenerationYear(modelId: number) {
   const result = await db
     .select({ startYear: generations.start_year })
     .from(generations)
-    .where(eq(generations.model_id, modelId))
+    .innerJoin(phases, eq(phases.generation_id, generations.id))
+    .innerJoin(trims, eq(trims.phase_id, phases.id))
+    .innerJoin(dimensions, eq(dimensions.trim_id, trims.id))
+    .where(and(eq(generations.model_id, modelId), publishedDimension))
     .orderBy(sql`${generations.start_year} DESC`)
     .limit(1);
 
@@ -133,7 +139,7 @@ export async function getLatestGenerationYear(modelId: number) {
 
 /**
  * 指定車種の代表寸法を取得する。
- * generations -> phases -> trims -> dimensions の最初の1件を返す。
+ * 公開された最新世代を優先し、同世代では寸法ID順で返す。
  */
 export async function getDimensionsByModelId(modelId: number) {
   const result = await db
@@ -153,8 +159,8 @@ export async function getDimensionsByModelId(modelId: number) {
     .innerJoin(trims, eq(dimensions.trim_id, trims.id))
     .innerJoin(phases, eq(trims.phase_id, phases.id))
     .innerJoin(generations, eq(phases.generation_id, generations.id))
-    .where(eq(generations.model_id, modelId))
-    .orderBy(dimensions.id)
+    .where(and(eq(generations.model_id, modelId), publishedDimension))
+    .orderBy(sql`${generations.start_year} DESC`, dimensions.id)
     .limit(1);
 
   return result[0] ?? null;
@@ -179,7 +185,8 @@ export async function getAllDimensions() {
     .innerJoin(phases, eq(trims.phase_id, phases.id))
     .innerJoin(generations, eq(phases.generation_id, generations.id))
     .innerJoin(models, eq(generations.model_id, models.id))
-    .innerJoin(makers, eq(models.maker_id, makers.id));
+    .innerJoin(makers, eq(models.maker_id, makers.id))
+    .where(publishedDimension);
 }
 
 // ---------- All Trims with Dimensions ----------
@@ -208,13 +215,15 @@ export async function getAllTrimsWithDimensions(modelId: number) {
       weightKg: dimensions.weight_kg,
       widthWithMirrorsMm: dimensions.width_with_mirrors_mm,
       minTurningRadiusM: dimensions.min_turning_radius_m,
+      specificationNote: dimensions.specification_note,
+      sourceUrl: dimensions.source_url,
     })
     .from(dimensions)
     .innerJoin(trims, eq(dimensions.trim_id, trims.id))
     .innerJoin(phases, eq(trims.phase_id, phases.id))
     .innerJoin(generations, eq(phases.generation_id, generations.id))
-    .where(eq(generations.model_id, modelId))
-    .orderBy(dimensions.id);
+    .where(and(eq(generations.model_id, modelId), publishedDimension))
+    .orderBy(sql`${generations.start_year} DESC`, dimensions.id);
 }
 
 // ---------- Parking Lots ----------
@@ -455,9 +464,9 @@ export async function getModelsByMakerSlug(makerSlug: string) {
     .leftJoin(generations, eq(generations.model_id, models.id))
     .leftJoin(phases, eq(phases.generation_id, generations.id))
     .leftJoin(trims, eq(trims.phase_id, phases.id))
-    .leftJoin(dimensions, eq(dimensions.trim_id, trims.id))
+    .leftJoin(dimensions, and(eq(dimensions.trim_id, trims.id), publishedDimension))
     .where(eq(makers.slug, makerSlug))
-    .orderBy(models.name, dimensions.id);
+    .orderBy(models.name, sql`${generations.start_year} DESC`, dimensions.id);
 
   // LEFT JOIN による行爆発をモデル単位で重複排除。
   // 寸法を持つ行を優先し、なければ寸法なしの行を採用する。

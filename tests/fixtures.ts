@@ -10,6 +10,7 @@ export async function createFixture() {
   const client = createClient({ url });
   await client.executeMultiple(readFileSync("drizzle/0000_fantastic_skreet.sql", "utf8"));
   await client.executeMultiple(readFileSync("drizzle/0001_motionless_jane_foster.sql", "utf8"));
+  await client.executeMultiple(readFileSync("drizzle/0002_nasty_tombstone.sql", "utf8"));
   await client.execute("INSERT INTO makers(id,name,slug) VALUES(1,'トヨタ','toyota')");
   await client.execute("INSERT INTO models(id,maker_id,name,slug,body_type) VALUES(1,1,'アルファード','alphard','minivan')");
   await client.execute("INSERT INTO generations(id,model_id,name,start_year) VALUES(1,1,'40系 (2023-)',2023),(2,1,'30系後期 (2018-2022)',2018)");
