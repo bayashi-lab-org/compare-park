@@ -705,12 +705,13 @@ const carData: CarSeed[] = [
   // ============================================================
   // レクサス RX 5代目 (2022-)
   // ============================================================
-  { ...rx5Base, trimName: "RX350", driveType: "2WD", transmission: "8AT", lengthMm: 4890, widthMm: 1920, heightMm: 1700, weightKg: 1880, minTurningRadiusM: 5.9 },
-  t(rx5Base, { trimName: "RX350", driveType: "AWD", transmission: "8AT", lengthMm: 4890, widthMm: 1920, heightMm: 1700, weightKg: 1950, minTurningRadiusM: 5.9 }),
-  t(rx5Base, { trimName: "RX350 version L", driveType: "2WD", transmission: "8AT", lengthMm: 4890, widthMm: 1920, heightMm: 1700, weightKg: 1950, minTurningRadiusM: 5.9 }),
-  t(rx5Base, { trimName: "RX350h", driveType: "AWD", transmission: "CVT", lengthMm: 4890, widthMm: 1920, heightMm: 1700, weightKg: 2000, minTurningRadiusM: 5.9 }),
+  // 全高・重量の出典と対象限定の訂正: src/lib/rx-data-corrections.ts
+  { ...rx5Base, trimName: "RX350", driveType: "2WD", transmission: "8AT", lengthMm: 4890, widthMm: 1920, heightMm: 1705, weightKg: 1870, minTurningRadiusM: 5.9 },
+  t(rx5Base, { trimName: "RX350", driveType: "AWD", transmission: "8AT", lengthMm: 4890, widthMm: 1920, heightMm: 1705, weightKg: 1950, minTurningRadiusM: 5.9 }),
+  t(rx5Base, { trimName: "RX350 version L", driveType: "2WD", transmission: "8AT", lengthMm: 4890, widthMm: 1920, heightMm: 1705, weightKg: 1870, minTurningRadiusM: 5.9 }),
+  t(rx5Base, { trimName: "RX350h", driveType: "AWD", transmission: "CVT", lengthMm: 4890, widthMm: 1920, heightMm: 1700, weightKg: 2010, minTurningRadiusM: 5.9 }),
   t(rx5Base, { trimName: "RX350h version L", driveType: "AWD", transmission: "CVT", lengthMm: 4890, widthMm: 1920, heightMm: 1700, weightKg: 2010, minTurningRadiusM: 5.9 }),
-  t(rx5Base, { trimName: "RX450h+ PHEV", driveType: "AWD", transmission: "CVT", lengthMm: 4890, widthMm: 1920, heightMm: 1700, weightKg: 2110, minTurningRadiusM: 5.9 }),
+  t(rx5Base, { trimName: "RX450h+ PHEV", driveType: "AWD", transmission: "CVT", lengthMm: 4890, widthMm: 1920, heightMm: 1700, weightKg: 2160, minTurningRadiusM: 5.9 }),
   t(rx5Base, { trimName: "RX500h F SPORT Performance", driveType: "AWD", transmission: "6AT", lengthMm: 4890, widthMm: 1920, heightMm: 1700, weightKg: 2100, minTurningRadiusM: 5.9 }),
 
   // ============================================================

@@ -19,7 +19,8 @@
     "db:backfill-facility-type": "npx tsx src/scripts/backfill-facility-type.ts",
     "test": "node --import tsx --test tests/*.test.ts",
     "check:content": "node scripts/check-content-links.mjs",
-    "db:correct-restart": "tsx src/scripts/correct-restart-data.ts"
+    "db:correct-restart": "tsx src/scripts/correct-restart-data.ts",
+    "db:correct-rx": "tsx src/scripts/correct-rx-data.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.2.0",

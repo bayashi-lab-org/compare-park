@@ -329,32 +329,30 @@ export default async function CarDetailPage({ params, searchParams }: Props) {
           </dl>
           <details className="mt-5 border-t pt-4">
             <summary className="cursor-pointer text-sm font-bold text-primary">
-              よくある駐車場制限と比較する
+              駐車場の制限値と比べる
             </summary>
+            <p className="mt-3 text-sm leading-6 text-muted-foreground">
+              比較用の制限値の例です。「普通車用」「ミドルルーフ」「ハイルーフ」の上限は設備・区画によって異なります。利用する駐車場の数値で確認してください。
+            </p>
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
               {dimension.height_mm != null && (
                 <DimensionVisualizer
                   label="全高 (高さ)"
                   value={dimension.height_mm}
-                  limits={[
-                    { value: 1550, label: "普通車" },
-                    { value: 1800, label: "ミドル" },
-                    { value: 2000, label: "ハイルーフ" },
-                  ]}
+                  limits={[1550, 1750, 1800, 2000]}
                 />
               )}
               {dimension.width_mm != null && (
                 <DimensionVisualizer
                   label="全幅 (車幅)"
                   value={dimension.width_mm}
-                  limits={[
-                    { value: 1850, label: "標準" },
-                    { value: 1900, label: "ワイド" },
-                    { value: 2050, label: "大型" },
-                  ]}
+                  limits={[1850, 1900, 1950, 2050]}
                 />
               )}
             </div>
+            <p className="mt-3 text-xs leading-5 text-muted-foreground">
+              高さ・幅それぞれの比較で、入庫の可否を保証するものではありません。全長・重量・ミラー・タイヤ幅などの条件も確認が必要です。「上限に近い」は制限値の95%を超える場合の表示です。
+            </p>
           </details>
         </div>
       )}

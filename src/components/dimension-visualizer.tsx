@@ -1,81 +1,46 @@
+import { CircleCheck, CircleX, TriangleAlert } from "lucide-react";
+import { compareDimensionToLimit } from "@/lib/dimension-comparison";
 import { cn } from "@/lib/utils";
-
-interface Limit {
-  value: number;
-  label: string;
-}
 
 interface DimensionVisualizerProps {
   label: string;
   value: number;
-  unit?: string;
-  limits: Limit[];
-  maxScale?: number;
+  limits: number[];
 }
 
-export function DimensionVisualizer({
-  label,
-  value,
-  unit = "mm",
-  limits,
-  maxScale,
-}: DimensionVisualizerProps) {
-  // スケールの最大値を決定
-  const actualMax = Math.max(value, ...limits.map((l) => l.value));
-  const scaleMax = maxScale || actualMax * 1.1;
-
-  const valueRatio = (value / scaleMax) * 100;
-
+/** 駐車区画の名称で車を分類せず、制限値ごとの差分を比較する。 */
+export function DimensionVisualizer({ label, value, limits }: DimensionVisualizerProps) {
   return (
-    <div className="space-y-4 rounded-xl border bg-card p-4 shadow-sm">
-      <div className="flex items-center justify-between">
-        <h3 className="text-sm font-bold text-muted-foreground">{label}</h3>
-        <div className="text-lg font-bold tabular-nums">
-          {value.toLocaleString()}
-          <span className="ml-1 text-xs font-normal text-muted-foreground">{unit}</span>
-        </div>
+    <section className="min-w-0 rounded-xl border bg-card p-4">
+      <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
+        <h3 className="text-sm font-bold">{label}</h3>
+        <p className="text-sm text-muted-foreground">
+          車の寸法 <strong className="ml-1 text-lg text-foreground tabular-nums">{value.toLocaleString()}</strong> mm
+        </p>
       </div>
-
-      <div className="relative pt-6 pb-2">
-        {/* 背景のベースライン */}
-        <div className="h-4 w-full rounded-full bg-muted/50" />
-
-        {/* 制限値のマーカー */}
-        {limits.map((limit, idx) => {
-          const ratio = (limit.value / scaleMax) * 100;
-          const isPassed = value <= limit.value;
-          
+      <dl className="divide-y">
+        {limits.map((limit) => {
+          const comparison = compareDimensionToLimit(value, limit);
+          if (!comparison) return null;
+          const { result, difference } = comparison;
+          const Icon = result === "ng" ? CircleX : result === "caution" ? TriangleAlert : CircleCheck;
+          const status = result === "ng" ? "制限超過" : difference === 0 ? "上限と同じ" : result === "caution" ? "上限に近い" : "制限内";
           return (
-            <div
-              key={idx}
-              className="absolute top-0 flex flex-col items-center"
-              style={{ left: `${ratio}%`, transform: "translateX(-50%)" }}
-            >
-              <div className={cn(
-                "mb-1 text-[10px] font-bold whitespace-nowrap",
-                isPassed ? "text-match-ok" : "text-match-ng"
-              )}>
-                {limit.label}
-              </div>
-              <div className={cn(
-                "h-6 w-0.5",
-                isPassed ? "bg-match-ok/40" : "bg-match-ng/40"
-              )} />
-              <div className="mt-5 text-[9px] text-muted-foreground tabular-nums">
-                {limit.value}{unit}
-              </div>
+            <div key={limit} className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 py-3 first:pt-0 last:pb-0">
+              <dt className="text-sm font-medium tabular-nums">
+                {limit.toLocaleString()}<span className="ml-1 text-xs font-normal text-muted-foreground">mm 制限</span>
+              </dt>
+              <dd className={cn("text-right", result === "ng" ? "text-match-ng" : result === "caution" ? "text-match-caution" : "text-match-ok")}>
+                <p className="flex items-center justify-end gap-1.5 text-sm font-bold tabular-nums">
+                  <Icon aria-hidden="true" className="size-4 shrink-0" />
+                  {difference < 0 ? `${Math.abs(difference).toLocaleString()} mm 超過` : difference === 0 ? "差 0 mm" : `上限まで ${difference.toLocaleString()} mm`}
+                </p>
+                <p className="mt-0.5 text-xs">{status}</p>
+              </dd>
             </div>
           );
         })}
-
-        {/* 車の現在の値を示すバー */}
-        <div
-          className="absolute top-6 h-4 rounded-full bg-primary shadow-sm transition-all duration-1000 ease-out"
-          style={{ width: `${valueRatio}%` }}
-        >
-          <div className="absolute -right-1 -top-1 size-6 rounded-full border-2 border-background bg-primary shadow-sm" />
-        </div>
-      </div>
-    </div>
+      </dl>
+    </section>
   );
 }
