@@ -75,7 +75,7 @@ export function calculateMatch(
   let overallResult: MatchResult = "ok";
 
   for (const check of checks) {
-    if (check.value == null || check.limit == null) continue;
+    if (check.value == null || check.limit == null || !Number.isFinite(check.value) || !Number.isFinite(check.limit) || check.value <= 0 || check.limit <= 0) continue;
 
     const ratio = check.value / check.limit;
     details.push({
@@ -93,6 +93,8 @@ export function calculateMatch(
     }
   }
 
+  // 欠損を「駐車可能」と解釈しない。超過があればNGを優先する。
+  if (details.length < checks.length && overallResult === "ok") overallResult = "caution";
   return { result: overallResult, details };
 }
 

@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { vehicleHref } from "@/lib/vehicle-selection";
 import { useMyCar } from "@/hooks/use-my-car";
 import { Car, ChevronDown, ChevronRight, X, Ruler, Weight, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -40,7 +41,7 @@ export function HeaderMyCar() {
         )}
       >
         <Car className="size-3.5" />
-        <span className="max-w-[80px] truncate sm:max-w-[120px]">{myCar.name}</span>
+        <span className="max-w-[52px] truncate sm:max-w-[120px]">{myCar.name}</span>
         <ChevronDown className={cn("size-3 transition-transform", isOpen && "rotate-180")} />
       </button>
 
@@ -88,9 +89,10 @@ export function HeaderMyCar() {
             )}
           </div>
 
+          {myCar.gradeName && <p className="mb-4 text-xs leading-6 text-muted-foreground">{myCar.gradeName}</p>}
           <div className="space-y-2">
             <Link
-              href={`/car/${myCar.slug}`}
+              href={vehicleHref(`/car/${myCar.slug}`, { carSlug: myCar.slug, generationId: myCar.generationId, trimId: myCar.trimId })}
               onClick={() => setIsOpen(false)}
               className="flex w-full items-center justify-between rounded-lg bg-primary/5 px-3 py-2 text-xs font-bold text-primary transition-colors hover:bg-primary/10"
             >

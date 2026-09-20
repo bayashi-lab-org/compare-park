@@ -6,6 +6,9 @@ interface MyCar {
   slug: string;
   name: string;
   makerName: string;
+  generationId?: number;
+  trimId?: number;
+  gradeName?: string;
   lengthMm?: number;
   widthMm?: number;
   heightMm?: number;

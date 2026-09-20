@@ -213,7 +213,8 @@ export async function getAllTrimsWithDimensions(modelId: number) {
     .innerJoin(trims, eq(dimensions.trim_id, trims.id))
     .innerJoin(phases, eq(trims.phase_id, phases.id))
     .innerJoin(generations, eq(phases.generation_id, generations.id))
-    .where(eq(generations.model_id, modelId));
+    .where(eq(generations.model_id, modelId))
+    .orderBy(dimensions.id);
 }
 
 // ---------- Parking Lots ----------

@@ -1,5 +1,6 @@
 "use client";
 
+import { vehicleHref } from "@/lib/vehicle-selection";
 import { useMyCar } from "@/hooks/use-my-car";
 import { Car, ChevronRight, CheckCircle } from "lucide-react";
 import Link from "next/link";
@@ -61,7 +62,7 @@ export function MyCarWardBanner({ wardSlug, wardName, className }: MyCarWardBann
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-primary">My Car Detected</span>
+              <span className="text-xs font-bold uppercase tracking-wider text-primary">保存した車で探す</span>
               <CheckCircle className="size-3 text-match-ok" />
             </div>
             <h3 className="text-lg font-bold">
@@ -73,7 +74,7 @@ export function MyCarWardBanner({ wardSlug, wardName, className }: MyCarWardBann
           </div>
         </div>
         <Link
-          href={`/area/${wardSlug}/car/${myCar.slug}`}
+          href={vehicleHref(`/area/${wardSlug}/car/${myCar.slug}`, { carSlug: myCar.slug, generationId: myCar.generationId, trimId: myCar.trimId })}
           className="inline-flex h-11 items-center justify-center rounded-lg bg-primary px-6 text-sm font-bold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-lg active:scale-95"
         >
           {myCar.name} で判定する

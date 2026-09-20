@@ -1,3 +1,8 @@
+import {
+  resolveVehicleGrade,
+  vehicleHref,
+  gradeLabel,
+} from "@/lib/vehicle-selection";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -25,7 +30,7 @@ interface Props {
 export async function generateStaticParams() {
   const allModels = await getModelsWithMaker();
   return TOKYO_WARD_MAP.flatMap((w) =>
-    allModels.map((m) => ({ ward: w.slug, slug: m.slug }))
+    allModels.map((m) => ({ ward: w.slug, slug: m.slug })),
   );
 }
 
@@ -50,7 +55,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title,
     description,
     alternates: { canonical: `/area/${wardInfo.slug}/car/${slug}` },
-    robots: hasContent ? { index: true, follow: true } : { index: false, follow: true },
+    robots: hasContent
+      ? { index: true, follow: true }
+      : { index: false, follow: true },
     openGraph: {
       type: "website",
       title,
@@ -84,21 +91,15 @@ export default async function AreaCarPage({ params, searchParams }: Props) {
     getRestrictionsByWard(decodedWard),
   ]);
 
-  // 選択中のトリムを決定
-  const genId = gen ? Number(gen) : null;
-  const trimId = trimParam ? Number(trimParam) : null;
-
-  let selectedTrim = allTrims.length > 0 ? allTrims[0] : null;
-
-  if (genId != null && trimId != null) {
-    const found = allTrims.find(
-      (t) => t.generationId === genId && t.trimId === trimId
-    );
-    if (found) selectedTrim = found;
-  } else if (genId != null) {
-    const found = allTrims.find((t) => t.generationId === genId);
-    if (found) selectedTrim = found;
-  }
+  const selectedTrim = resolveVehicleGrade(allTrims, {
+    generationId: gen !== undefined ? Number(gen) : undefined,
+    trimId: trimParam !== undefined ? Number(trimParam) : undefined,
+  });
+  const vehicleSelection = {
+    carSlug: slug,
+    generationId: selectedTrim?.generationId,
+    trimId: selectedTrim?.trimId,
+  };
 
   const dimension = selectedTrim
     ? {
@@ -110,7 +111,10 @@ export default async function AreaCarPage({ params, searchParams }: Props) {
     : null;
 
   // マッチング判定（共通パイプライン）
-  const { items: parkingMatchItems, matchDetails } = buildParkingMatchItems(dimension, restrictions);
+  const { items: parkingMatchItems, matchDetails } = buildParkingMatchItems(
+    dimension,
+    restrictions,
+  );
   const okCount = parkingMatchItems.filter((i) => i.result === "ok").length;
 
   const summaryLines = generateMatchSummary(
@@ -132,20 +136,35 @@ export default async function AreaCarPage({ params, searchParams }: Props) {
           url: `https://www.tomepita.com/area/${ward}/car/${slug}`,
           description: `${decodedWard}エリアの機械式・立体駐車場で${model.name}が駐車可能かを判定。`,
           about: [
-            { "@type": "Car", name: model.name, manufacturer: { "@type": "Organization", name: model.maker_name } },
-            { "@type": "Place", name: decodedWard, address: { "@type": "PostalAddress", addressLocality: decodedWard, addressRegion: "東京都", addressCountry: "JP" } },
+            {
+              "@type": "Car",
+              name: model.name,
+              manufacturer: { "@type": "Organization", name: model.maker_name },
+            },
+            {
+              "@type": "Place",
+              name: decodedWard,
+              address: {
+                "@type": "PostalAddress",
+                addressLocality: decodedWard,
+                addressRegion: "東京都",
+                addressCountry: "JP",
+              },
+            },
           ],
           ...(parkingMatchItems.length > 0
             ? {
                 mainEntity: {
                   "@type": "ItemList",
                   numberOfItems: parkingMatchItems.length,
-                  itemListElement: parkingMatchItems.slice(0, 20).map((item, i) => ({
-                    "@type": "ListItem",
-                    position: i + 1,
-                    name: item.parkingLotName,
-                    url: `https://www.tomepita.com/parking/${item.parkingLotSlug}`,
-                  })),
+                  itemListElement: parkingMatchItems
+                    .slice(0, 20)
+                    .map((item, i) => ({
+                      "@type": "ListItem",
+                      position: i + 1,
+                      name: item.parkingLotName,
+                      url: `https://www.tomepita.com/parking/${item.parkingLotSlug}`,
+                    })),
                 },
               }
             : {}),
@@ -167,11 +186,27 @@ export default async function AreaCarPage({ params, searchParams }: Props) {
         </h1>
         <p className="mt-2 text-muted-foreground">
           {decodedWard}エリアの駐車場 {parkingMatchItems.length}件中、
-          <span className="font-medium text-match-ok">{okCount}件が駐車可能</span>
+          <span className="font-medium text-match-ok">
+            {okCount}件がサイズ条件内
+          </span>
           です。
         </p>
       </div>
 
+      {selectedTrim && (
+        <div className="mb-5 rounded-xl border border-primary/20 bg-primary/5 p-4">
+          <p className="text-xs font-bold text-primary">
+            {trimParam ? "選択したグレードで比較" : "代表グレードでの参考判定"}
+          </p>
+          <p className="mt-1 text-sm">{gradeLabel(selectedTrim)}</p>
+          <Link
+            className="mt-2 inline-block text-sm font-bold text-primary underline"
+            href={vehicleHref(`/car/${slug}`, vehicleSelection)}
+          >
+            車・グレードを変更する
+          </Link>
+        </div>
+      )}
       {/* 車種情報サマリー */}
       {dimension && (
         <Card className="mb-6">
@@ -179,7 +214,7 @@ export default async function AreaCarPage({ params, searchParams }: Props) {
             <div className="flex items-center gap-2">
               <Badge variant="outline">{model.maker_name}</Badge>
               <Link
-                href={`/car/${slug}`}
+                href={vehicleHref(`/car/${slug}`, vehicleSelection)}
                 className="font-medium text-primary hover:underline"
               >
                 {model.name}の詳細
@@ -232,8 +267,13 @@ export default async function AreaCarPage({ params, searchParams }: Props) {
             {decodedWard}の駐車場マップ
           </h2>
           <ParkingMapLoader
+            selection={vehicleSelection}
             items={parkingMatchItems}
-            center={wardInfo.lat && wardInfo.lng ? [wardInfo.lat, wardInfo.lng] : undefined}
+            center={
+              wardInfo.lat && wardInfo.lng
+                ? [wardInfo.lat, wardInfo.lng]
+                : undefined
+            }
           />
         </div>
       )}
@@ -244,7 +284,10 @@ export default async function AreaCarPage({ params, searchParams }: Props) {
           {decodedWard}の駐車場 適合判定
         </h2>
         {parkingMatchItems.length > 0 ? (
-          <ParkingMatchList items={parkingMatchItems} />
+          <ParkingMatchList
+            selection={vehicleSelection}
+            items={parkingMatchItems}
+          />
         ) : (
           <Card>
             <CardContent className="py-8 text-center text-muted-foreground">
@@ -261,7 +304,7 @@ export default async function AreaCarPage({ params, searchParams }: Props) {
         <h2 className="mb-4 text-lg font-bold">関連ページ</h2>
         <div className="flex flex-wrap gap-3">
           <Link
-            href={`/car/${slug}`}
+            href={vehicleHref(`/car/${slug}`, vehicleSelection)}
             className="rounded-lg border border-border px-4 py-2 text-sm transition-colors hover:bg-muted"
           >
             {model.name}の全エリア判定を見る

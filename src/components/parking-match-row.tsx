@@ -6,6 +6,7 @@ import { ChevronDown, ChevronRight, AlertTriangle, XCircle } from "lucide-react"
 import { MatchBadge } from "@/components/match-badge";
 import { DimensionCompare } from "@/components/dimension-compare";
 import type { ParkingMatchItem } from "@/lib/matching";
+import { vehicleHref, type VehicleSelection } from "@/lib/vehicle-selection";
 
 export type { ParkingMatchItem };
 
@@ -18,9 +19,10 @@ const parkingTypeLabels: Record<string, string> = {
 
 interface ParkingMatchRowProps {
   item: ParkingMatchItem;
+  selection?: VehicleSelection;
 }
 
-export function ParkingMatchRow({ item }: ParkingMatchRowProps) {
+export function ParkingMatchRow({ item, selection }: ParkingMatchRowProps) {
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -31,7 +33,7 @@ export function ParkingMatchRow({ item }: ParkingMatchRowProps) {
       <div className="flex items-start gap-3 px-4 py-3">
         <div className="min-w-0 flex-1">
           <Link
-            href={`/parking/${item.parkingLotSlug}`}
+            href={selection ? vehicleHref(`/parking/${item.parkingLotSlug}#checker`, selection) : `/parking/${item.parkingLotSlug}`}
             className="group block"
           >
             <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-2">
@@ -69,7 +71,8 @@ export function ParkingMatchRow({ item }: ParkingMatchRowProps) {
         {item.details.length > 0 && (
           <button
             onClick={() => setExpanded(!expanded)}
-            className="mt-1 shrink-0 rounded p-1 text-muted-foreground hover:bg-muted transition-colors"
+            className="mt-1 flex size-11 shrink-0 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted transition-colors"
+            aria-expanded={expanded}
             aria-label={expanded ? "詳細を閉じる" : "詳細を表示"}
           >
             {expanded ? (

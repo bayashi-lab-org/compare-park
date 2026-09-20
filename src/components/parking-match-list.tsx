@@ -1,256 +1,194 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { CircleCheck, CircleX, TriangleAlert, Search } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { useMemo, useState } from "react";
+import { Search, RotateCcw, ChevronDown } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { SearchPicker } from "@/components/search-picker";
 import { ParkingMatchRow } from "@/components/parking-match-row";
-import type { ParkingMatchItem } from "@/components/parking-match-row";
-import type { MatchResult } from "@/lib/matching";
+import {
+  normalizeSearch,
+  type VehicleSelection,
+} from "@/lib/vehicle-selection";
+import type { MatchResult, ParkingMatchItem } from "@/lib/matching";
 
-const PAGE_SIZE = 20;
-
-type FilterType = "all" | MatchResult;
-
-const filterConfig: {
-  key: FilterType;
-  label: string;
-  icon: React.ElementType;
-  color: string;
-  bg: string;
-  border: string;
-}[] = [
-  {
-    key: "ok",
-    label: "OK",
-    icon: CircleCheck,
-    color: "text-match-ok",
-    bg: "bg-match-ok/10",
-    border: "border-match-ok",
-  },
-  {
-    key: "caution",
-    label: "注意",
-    icon: TriangleAlert,
-    color: "text-match-caution",
-    bg: "bg-match-caution/10",
-    border: "border-match-caution",
-  },
-  {
-    key: "ng",
-    label: "NG",
-    icon: CircleX,
-    color: "text-match-ng",
-    bg: "bg-match-ng/10",
-    border: "border-match-ng",
-  },
-];
-
-interface ParkingMatchListProps {
-  items: ParkingMatchItem[];
-  showSearch?: boolean;
-  showAreaFilter?: boolean;
-}
-
-function extractWard(address: string): string | null {
-  const match = address.match(/([\u4e00-\u9fa5]+区)/);
-  return match ? match[1] : null;
-}
+const PAGE_SIZE = 12;
+const FILTERS = [
+  { key: "all", label: "すべて" },
+  { key: "ok", label: "条件内" },
+  { key: "caution", label: "要確認" },
+  { key: "ng", label: "超過" },
+] as const;
 
 export function ParkingMatchList({
   items,
+  selection,
   showSearch = true,
   showAreaFilter = false,
-}: ParkingMatchListProps) {
-  const [activeFilter, setActiveFilter] = useState<FilterType>("all");
+}: {
+  items: ParkingMatchItem[];
+  selection?: VehicleSelection;
+  showSearch?: boolean;
+  showAreaFilter?: boolean;
+}) {
+  const [activeFilter, setActiveFilter] = useState<"all" | MatchResult>("all");
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedWard, setSelectedWard] = useState<string | null>(null);
-
-  // エリア（区）一覧を抽出
-  const wards = useMemo(() => {
-    if (!showAreaFilter) return [];
-    const wardSet = new Set<string>();
-    for (const item of items) {
-      const ward = extractWard(item.parkingLotAddress);
-      if (ward) wardSet.add(ward);
-    }
-    return Array.from(wardSet).sort();
-  }, [items, showAreaFilter]);
-
-  const counts = useMemo(() => {
-    const c = { ok: 0, caution: 0, ng: 0 };
-    for (const item of items) {
-      c[item.result]++;
-    }
-    return c;
-  }, [items]);
-
-  const filtered = useMemo(() => {
-    let result = items;
-
-    if (activeFilter !== "all") {
-      result = result.filter((item) => item.result === activeFilter);
-    }
-
-    if (searchQuery) {
-      const q = searchQuery.toLowerCase();
-      result = result.filter(
+  const [query, setQuery] = useState("");
+  const [ward, setWard] = useState("");
+  const extractWard = (address: string) =>
+    address.match(/([\u4e00-\u9fa5]+区)/)?.[1] ?? "";
+  const wards = useMemo(
+    () =>
+      [
+        ...new Set(
+          items
+            .map((item) => extractWard(item.parkingLotAddress))
+            .filter(Boolean),
+        ),
+      ].sort(),
+    [items],
+  );
+  const scoped = useMemo(
+    () =>
+      items.filter(
         (item) =>
-          item.parkingLotName.toLowerCase().includes(q) ||
-          item.parkingLotAddress.toLowerCase().includes(q)
-      );
-    }
-
-    if (selectedWard) {
-      result = result.filter((item) => {
-        const ward = extractWard(item.parkingLotAddress);
-        return ward === selectedWard;
-      });
-    }
-
-    return result;
-  }, [items, activeFilter, searchQuery, selectedWard]);
-
-  const visible = filtered.slice(0, visibleCount);
-  const remaining = filtered.length - visibleCount;
-
-  const handleFilterChange = (filter: FilterType) => {
-    setActiveFilter(filter);
+          (!ward || extractWard(item.parkingLotAddress) === ward) &&
+          normalizeSearch(
+            `${item.parkingLotName} ${item.parkingLotAddress}`,
+          ).includes(normalizeSearch(query)),
+      ),
+    [items, ward, query],
+  );
+  const filtered =
+    activeFilter === "all"
+      ? scoped
+      : scoped.filter((item) => item.result === activeFilter);
+  const reset = () => {
+    setQuery("");
+    setWard("");
+    setActiveFilter("all");
     setVisibleCount(PAGE_SIZE);
   };
-
   return (
     <div className="space-y-4">
-      {/* テキスト検索 */}
-      {showSearch && (
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            placeholder="駐車場名・住所で検索..."
-            value={searchQuery}
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-              setVisibleCount(PAGE_SIZE);
-            }}
-            className="pl-9"
-          />
-        </div>
-      )}
-
-      {/* エリアフィルタ */}
-      {showAreaFilter && wards.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          <button
-            onClick={() => {
-              setSelectedWard(null);
-              setVisibleCount(PAGE_SIZE);
-            }}
-            className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
-              selectedWard === null
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            すべて
-          </button>
-          {wards.map((ward) => (
-            <button
-              key={ward}
-              onClick={() => {
-                setSelectedWard(selectedWard === ward ? null : ward);
+      <div className="rounded-2xl border bg-white p-4 sm:p-5">
+        <div
+          className={
+            showAreaFilter
+              ? "grid items-end gap-4 sm:grid-cols-[1.4fr_1fr]"
+              : ""
+          }
+        >
+          {showSearch && (
+            <div>
+              <label
+                htmlFor="parking-result-search"
+                className="mb-2 block text-xs font-bold text-muted-foreground"
+              >
+                駐車場名・住所で絞り込む
+              </label>
+              <div className="relative">
+                <Search className="absolute top-4 left-3 size-4 text-muted-foreground" />
+                <Input
+                  id="parking-result-search"
+                  placeholder="例：渋谷、宮下公園"
+                  value={query}
+                  onChange={(event) => {
+                    setQuery(event.target.value);
+                    setVisibleCount(PAGE_SIZE);
+                  }}
+                  className="h-14 rounded-xl pl-10 text-base"
+                />
+              </div>
+            </div>
+          )}
+          {showAreaFilter && (
+            <SearchPicker
+              label="エリア"
+              placeholder="すべてのエリア"
+              value={ward || "all"}
+              options={[
+                { id: "all", label: "すべてのエリア" },
+                ...wards.map((ward) => ({ id: ward, label: ward })),
+              ]}
+              onSelect={(value) => {
+                setWard(value === "all" ? "" : value);
                 setVisibleCount(PAGE_SIZE);
               }}
-              className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
-                selectedWard === ward
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-muted text-muted-foreground hover:text-foreground"
-              }`}
+            />
+          )}
+        </div>
+        <div
+          className="mt-5 grid grid-cols-4 gap-1 rounded-xl bg-muted p-1"
+          aria-label="判定結果で絞り込む"
+        >
+          {FILTERS.map(({ key, label }) => (
+            <Button
+              key={key}
+              variant="ghost"
+              aria-pressed={activeFilter === key}
+              onClick={() => {
+                setActiveFilter(key);
+                setVisibleCount(PAGE_SIZE);
+              }}
+              className={`h-auto min-h-12 flex-col gap-0 rounded-lg px-1 py-2 text-xs ${activeFilter === key ? "bg-white text-primary shadow-sm" : "text-muted-foreground"}`}
             >
-              {ward}
-            </button>
+              <span>{label}</span>
+              <span className="text-sm font-bold tabular-nums">
+                {(key === "all"
+                  ? scoped.length
+                  : scoped.filter((item) => item.result === key).length
+                ).toLocaleString()}
+              </span>
+            </Button>
           ))}
         </div>
-      )}
-
-      {/* サマリーカード */}
-      <div className="grid grid-cols-3 gap-3">
-        {filterConfig.map(({ key, label, icon: Icon, color, bg, border }) => {
-          const count = counts[key as MatchResult];
-          const isActive = activeFilter === key;
-          return (
-            <button
-              key={key}
-              onClick={() =>
-                handleFilterChange(isActive ? "all" : key)
-              }
-              className={`rounded-lg border-2 p-3 text-center transition-all ${bg} ${
-                isActive ? `${border} ring-2 ring-offset-1 ring-current ${color}` : "border-transparent"
-              }`}
-            >
-              <Icon className={`mx-auto size-5 ${color}`} />
-              <p className={`text-2xl font-bold ${color}`}>{count}</p>
-              <p className="text-xs text-muted-foreground">{label}</p>
-            </button>
-          );
-        })}
       </div>
-
-      {/* フィルタタブ */}
-      <div className="flex gap-1 rounded-lg bg-muted p-1">
-        <button
-          onClick={() => handleFilterChange("all")}
-          className={`flex-1 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
-            activeFilter === "all"
-              ? "bg-background text-foreground shadow-sm"
-              : "text-muted-foreground hover:text-foreground"
-          }`}
-        >
-          すべて ({items.length})
-        </button>
-        {filterConfig.map(({ key, label }) => {
-          const count = counts[key as MatchResult];
-          return (
-            <button
-              key={key}
-              onClick={() => handleFilterChange(key)}
-              className={`flex-1 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
-                activeFilter === key
-                  ? "bg-background text-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              {label} ({count})
-            </button>
-          );
-        })}
+      <div className="flex items-center justify-between gap-3">
+        <p role="status" className="text-sm text-muted-foreground">
+          <strong className="text-foreground">
+            {filtered.length.toLocaleString()}
+          </strong>
+          件の候補
+          {filtered.length > visibleCount && ` · ${visibleCount}件を表示`}
+        </p>
+        {(query || ward || activeFilter !== "all") && (
+          <Button variant="ghost" onClick={reset} className="h-11 text-xs">
+            <RotateCcw className="size-3.5" />
+            条件をリセット
+          </Button>
+        )}
       </div>
-
-      {/* リスト */}
-      {visible.length > 0 ? (
-        <Card>
-          <CardContent className="p-0">
-            {visible.map((item) => (
-              <ParkingMatchRow key={item.restrictionId} item={item} />
-            ))}
-          </CardContent>
-        </Card>
+      {filtered.length > 0 ? (
+        <div className="overflow-hidden rounded-2xl border bg-white">
+          {filtered.slice(0, visibleCount).map((item) => (
+            <ParkingMatchRow
+              key={item.restrictionId}
+              item={item}
+              selection={selection}
+            />
+          ))}
+        </div>
       ) : (
-        <Card>
-          <CardContent className="py-8 text-center text-muted-foreground">
-            該当する駐車場はありません。
-          </CardContent>
-        </Card>
+        <div className="rounded-2xl border bg-white p-8 text-center">
+          <p className="font-bold">この条件の駐車場は見つかりませんでした</p>
+          <p className="mt-2 text-sm leading-7 text-muted-foreground">
+            エリアを広げるか、別の名前でお試しください。
+          </p>
+          <Button variant="outline" className="mt-5 h-11" onClick={reset}>
+            絞り込みを解除する
+          </Button>
+        </div>
       )}
-
-      {/* もっと見る */}
-      {remaining > 0 && (
-        <button
-          onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
-          className="w-full rounded-lg border border-border py-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+      {filtered.length > visibleCount && (
+        <Button
+          variant="outline"
+          className="h-12 w-full rounded-xl bg-white"
+          onClick={() => setVisibleCount((count) => count + PAGE_SIZE)}
         >
-          もっと見る（残り{remaining}件）
-        </button>
+          さらに{Math.min(PAGE_SIZE, filtered.length - visibleCount)}件を見る
+          <ChevronDown className="size-4" />
+        </Button>
       )}
     </div>
   );

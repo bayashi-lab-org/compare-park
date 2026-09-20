@@ -19,12 +19,12 @@ export async function Header() {
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-4 md:gap-8">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
+          <Link href="/" className="flex shrink-0 items-center gap-2 whitespace-nowrap">
             <Image src="/logo.svg" alt="トメピタ" width={28} height={28} />
-            <span className="hidden text-xl font-bold text-primary sm:inline-block">トメピタ</span>
+            <span className="text-lg font-bold tracking-tight text-primary sm:text-xl">トメピタ</span>
           </Link>
 
-          <HeaderMyCar />
+          <div className="hidden sm:block"><HeaderMyCar /></div>
 
           {/* Desktop search */}
           <HeaderSearch vehicles={vehicles} className="hidden md:flex" />

@@ -5,7 +5,7 @@ import { DimensionCompare } from "@/components/dimension-compare";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import {
   getModelBySlug,
-  getDimensionsByModelId,
+  getAllTrimsWithDimensions,
   getParkingLotsByWard,
   getAllRestrictions,
   getParkingLots,
@@ -13,12 +13,27 @@ import {
 } from "@/lib/queries";
 import { calculateMatch, matchSortOrder } from "@/lib/matching";
 import Link from "next/link";
+import {
+  gradeDimensions,
+  gradeLabel,
+  resolveVehicleGrade,
+  vehicleHref,
+} from "@/lib/vehicle-selection";
 
 interface Props {
-  searchParams: Promise<{ car?: string; ward?: string; lat?: string; lng?: string }>;
+  searchParams: Promise<{
+    car?: string;
+    ward?: string;
+    lat?: string;
+    lng?: string;
+    gen?: string;
+    trim?: string;
+  }>;
 }
 
-export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+export async function generateMetadata({
+  searchParams,
+}: Props): Promise<Metadata> {
   const sp = await searchParams;
   const parts: string[] = [];
   if (sp.car) parts.push(sp.car);
@@ -27,7 +42,8 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 
   return {
     title: `${parts.length > 0 ? parts.join(" x ") + " の" : ""}検索結果 | トメピタ`,
-    description: "車種とエリアで絞り込んだ機械式・立体駐車場の適合判定結果を表示します。",
+    description:
+      "車種とエリアで絞り込んだ機械式・立体駐車場の適合判定結果を表示します。",
     alternates: { canonical: "/search" },
     robots: { index: false, follow: false },
   };
@@ -42,8 +58,19 @@ export default async function SearchPage({ searchParams }: Props) {
 
   // 車種情報の取得
   const model = carSlug ? await getModelBySlug(carSlug) : null;
-  const dimension =
-    model ? await getDimensionsByModelId(model.id) : null;
+  const grades = model ? await getAllTrimsWithDimensions(model.id) : [];
+  const grade = resolveVehicleGrade(grades, {
+    generationId: sp.gen !== undefined ? Number(sp.gen) : undefined,
+    trimId: sp.trim !== undefined ? Number(sp.trim) : undefined,
+  });
+  const dimension = grade ? gradeDimensions(grade) : null;
+  const selection = model
+    ? {
+        carSlug: model.slug,
+        generationId: grade?.generationId,
+        trimId: grade?.trimId,
+      }
+    : null;
 
   // 駐車場の取得
   // 3つのクエリの戻り値から、このページで必要なフィールドだけを共通型として抽出
@@ -90,7 +117,7 @@ export default async function SearchPage({ searchParams }: Props) {
         max_width_mm: restrictions[0].max_width_mm,
         max_height_mm: restrictions[0].max_height_mm,
         max_weight_kg: restrictions[0].max_weight_kg,
-      }
+      },
     );
 
     for (let i = 1; i < restrictions.length; i++) {
@@ -106,7 +133,7 @@ export default async function SearchPage({ searchParams }: Props) {
           max_width_mm: restrictions[i].max_width_mm,
           max_height_mm: restrictions[i].max_height_mm,
           max_weight_kg: restrictions[i].max_weight_kg,
-        }
+        },
       );
       if (matchSortOrder(match.result) < matchSortOrder(bestMatch.result)) {
         bestMatch = match;
@@ -121,21 +148,48 @@ export default async function SearchPage({ searchParams }: Props) {
     results.sort((a, b) => {
       if (!a.bestMatch) return 1;
       if (!b.bestMatch) return -1;
-      return matchSortOrder(a.bestMatch.result) - matchSortOrder(b.bestMatch.result);
+      return (
+        matchSortOrder(a.bestMatch.result) - matchSortOrder(b.bestMatch.result)
+      );
     });
   }
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <Breadcrumb
-        items={[
-          { label: "トップ", href: "/" },
-          { label: "検索結果" },
-        ]}
+        items={[{ label: "トップ", href: "/" }, { label: "検索結果" }]}
         currentPath="/search"
       />
 
       <h1 className="mb-2 text-3xl font-bold">検索結果</h1>
+      {grade && (
+        <p className="mb-4 text-sm leading-7 text-muted-foreground">
+          {gradeLabel(grade)}のサイズで比較しています。空車情報ではありません。
+        </p>
+      )}
+      {model && !grade && (
+        <p role="alert" className="mb-4 text-sm text-match-caution">
+          指定のグレードを確認できないため判定していません。車を選び直してください。
+        </p>
+      )}
+      <div className="mb-5 flex flex-wrap gap-3">
+        <Link
+          href={
+            selection
+              ? vehicleHref(`/car/${selection.carSlug}`, selection)
+              : "/car"
+          }
+          className="rounded-xl border bg-white px-4 py-2 text-sm font-bold text-primary"
+        >
+          車・グレードを選ぶ
+        </Link>
+        <Link
+          href="/area"
+          className="rounded-xl border bg-white px-4 py-2 text-sm font-bold text-primary"
+        >
+          エリアを変える
+        </Link>
+      </div>
 
       {/* 検索条件の表示 */}
       <div className="mb-8 flex flex-wrap gap-2 text-sm text-muted-foreground">
@@ -148,14 +202,14 @@ export default async function SearchPage({ searchParams }: Props) {
           <span className="rounded-full bg-primary/10 px-3 py-1 text-primary">
             エリア: 現在地周辺
           </span>
-        ) : ward && (
-          <span className="rounded-full bg-primary/10 px-3 py-1 text-primary">
-            エリア: {ward}
-          </span>
+        ) : (
+          ward && (
+            <span className="rounded-full bg-primary/10 px-3 py-1 text-primary">
+              エリア: {ward}
+            </span>
+          )
         )}
-        {!model && !ward && !lat && (
-          <span>全駐車場を表示しています</span>
-        )}
+        {!model && !ward && !lat && <span>全駐車場を表示しています</span>}
       </div>
 
       <p className="mb-6 text-muted-foreground">{results.length}件の駐車場</p>
@@ -166,7 +220,14 @@ export default async function SearchPage({ searchParams }: Props) {
             <Card key={lot.id}>
               <CardHeader>
                 <div className="flex items-center justify-between gap-2">
-                  <Link href={`/parking/${lot.slug}`} className="hover:underline">
+                  <Link
+                    href={
+                      selection && grade
+                        ? vehicleHref(`/parking/${lot.slug}#checker`, selection)
+                        : `/parking/${lot.slug}`
+                    }
+                    className="hover:underline"
+                  >
                     <CardTitle className="text-base">{lot.name}</CardTitle>
                   </Link>
                   {bestMatch && <MatchBadge result={bestMatch.result} />}
