@@ -1,4 +1,5 @@
 "use client";
+import { vehicleHref, type VehicleSelection } from "@/lib/vehicle-selection";
 
 import { useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
@@ -32,6 +33,7 @@ const DefaultIcon = L.icon({
 L.Marker.prototype.options.icon = DefaultIcon;
 
 interface Props {
+  selection?: VehicleSelection;
   items: MapItem[];
   center?: [number, number];
   zoom?: number;
@@ -62,7 +64,7 @@ function MapUpdater({ center }: { center: [number, number] }) {
   return null;
 }
 
-export default function ParkingMap({ items, center, zoom = 14 }: Props) {
+export default function ParkingMap({ items, center, zoom = 14, selection }: Props) {
   // 座標があるデータのみ抽出
   const validItems = items.filter(
     (item) => item.latitude != null && item.longitude != null
@@ -128,7 +130,7 @@ export default function ParkingMap({ items, center, zoom = 14 }: Props) {
                 
                 <div className="flex flex-col gap-1.5 border-t pt-2 mt-1">
                   <a 
-                    href={`/parking/${item.parkingLotSlug}`}
+                    href={selection ? vehicleHref(`/parking/${item.parkingLotSlug}#checker`, selection) : `/parking/${item.parkingLotSlug}`}
                     className="inline-flex items-center gap-1.5 text-[11px] text-primary font-bold hover:underline"
                   >
                     <Info className="size-3" />

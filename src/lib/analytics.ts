@@ -25,6 +25,7 @@ export function trackEvent(name: string, parameters: EventParameters = {}): void
 }
 
 export function getArticleCtaParameters(href: string, articleSlug: string) {
+  if (href === "/car") return { article_slug: articleSlug, target_type: "car_catalog", target_slug: "all" };
   const match = href.match(/^\/(car|parking)\/([a-z0-9-]+)(?:[?#].*)?$/);
   if (!match) return null;
   return { article_slug: articleSlug, target_type: match[1], target_slug: match[2] };

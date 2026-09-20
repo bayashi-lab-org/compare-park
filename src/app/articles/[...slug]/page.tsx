@@ -4,7 +4,7 @@ import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
 import Link from "next/link";
-import { ArrowLeft, Calendar, Tag } from "lucide-react";
+import { ArrowLeft, ArrowRight, Calendar, Car, Tag } from "lucide-react";
 import { Breadcrumb } from "@/components/breadcrumb";
 import { JsonLd } from "@/components/json-ld";
 import { TableOfContents } from "@/components/table-of-contents";
@@ -76,7 +76,7 @@ export default async function ArticlePage({ params }: PageProps) {
     article.frontmatter.category;
 
   const relatedArticles = getArticlesByCategory(
-    article.frontmatter.category
+    article.frontmatter.category,
   ).filter((a) => a.slug !== slugStr);
 
   const tocItems = extractHeadings(article.content);
@@ -110,7 +110,10 @@ export default async function ArticlePage({ params }: PageProps) {
   };
 
   return (
-    <div data-article-content className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
+    <div
+      data-article-content
+      className="mx-auto max-w-3xl px-4 py-6 sm:px-6 sm:py-10 lg:px-8"
+    >
       <ArticleClickTracking articleSlug={slugStr} />
       <JsonLd data={jsonLdData} />
 
@@ -118,7 +121,10 @@ export default async function ArticlePage({ params }: PageProps) {
         items={[
           { label: "トップ", href: "/" },
           { label: "コラム", href: "/articles" },
-          { label: categoryLabel, href: `/articles/category/${article.frontmatter.category}` },
+          {
+            label: categoryLabel,
+            href: `/articles/category/${article.frontmatter.category}`,
+          },
           { label: article.frontmatter.title },
         ]}
         currentPath={`/articles/${slugStr}`}
@@ -131,7 +137,7 @@ export default async function ArticlePage({ params }: PageProps) {
               {categoryLabel}
             </span>
           </div>
-          <h1 className="mb-4 text-2xl font-bold leading-tight sm:text-3xl">
+          <h1 className="mb-4 text-2xl font-bold leading-normal sm:text-3xl">
             {article.frontmatter.title}
           </h1>
           <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
@@ -149,7 +155,7 @@ export default async function ArticlePage({ params }: PageProps) {
           {article.frontmatter.tags && article.frontmatter.tags.length > 0 && (
             <div className="mt-3 flex flex-wrap items-center gap-2">
               <Tag className="size-4 text-muted-foreground" />
-              {article.frontmatter.tags.map((tag) => (
+              {article.frontmatter.tags.slice(0, 3).map((tag) => (
                 <span
                   key={tag}
                   className="rounded-md bg-muted px-2 py-0.5 text-xs text-muted-foreground"
@@ -160,6 +166,33 @@ export default async function ArticlePage({ params }: PageProps) {
             </div>
           )}
         </header>
+
+        <p className="mb-6 text-base leading-8 text-muted-foreground">
+          {article.frontmatter.description}
+        </p>
+        <Link
+          href={
+            article.frontmatter.carSlug
+              ? `/car/${article.frontmatter.carSlug}`
+              : "/car"
+          }
+          className="mb-6 flex items-center gap-4 rounded-2xl border border-primary/20 bg-white p-5 transition-colors hover:border-primary"
+        >
+          <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <Car className="size-5" />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-sm font-bold text-primary">
+              {article.frontmatter.carSlug
+                ? "この車のサイズ・駐車場候補を見る"
+                : "あなたの車で、サイズを確かめる"}
+            </span>
+            <span className="mt-1 block text-xs leading-6 text-muted-foreground">
+              世代・グレードを選んで、駐車場の制限と比較できます。
+            </span>
+          </span>
+          <ArrowRight className="size-4 shrink-0 text-primary" />
+        </Link>
 
         <TableOfContents items={tocItems} />
 

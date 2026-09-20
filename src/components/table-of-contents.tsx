@@ -14,9 +14,9 @@ export function TableOfContents({ items }: TableOfContentsProps) {
   if (items.length < 2) return null;
 
   return (
-    <nav className="mb-8 rounded-lg border bg-muted/30 p-4">
-      <p className="mb-2 text-sm font-semibold text-foreground">目次</p>
-      <ol className="space-y-1 text-sm">
+    <details className="mb-8 rounded-xl border bg-white p-4">
+      <summary className="cursor-pointer py-1 text-sm font-bold text-foreground">この記事の目次を見る</summary>
+      <nav aria-label="記事の目次" className="mt-4"><ol className="space-y-2 text-sm">
         {items.map((item) => (
           <li
             key={item.id}
@@ -30,7 +30,7 @@ export function TableOfContents({ items }: TableOfContentsProps) {
             </a>
           </li>
         ))}
-      </ol>
-    </nav>
+      </ol></nav>
+    </details>
   );
 }

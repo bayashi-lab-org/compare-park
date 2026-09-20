@@ -1,9 +1,14 @@
 "use client";
 
-import { useState, useMemo, useEffect, useRef, useCallback } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Car, MapPin, Search, X, ChevronRight } from "lucide-react";
+import { ArrowRight, Car, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SearchPicker } from "@/components/search-picker";
+import { NearMeButton } from "@/components/near-me-button";
+import { useMyCar } from "@/hooks/use-my-car";
+import { vehicleHref, type VehicleSelection } from "@/lib/vehicle-selection";
+import { TOKYO_WARD_MAP } from "@/lib/constants";
 import { trackEvent } from "@/lib/analytics";
 
 interface Vehicle {
@@ -11,342 +16,144 @@ interface Vehicle {
   name: string;
   makerName: string;
 }
-
 interface ParkingLot {
   slug: string;
   name: string;
   address: string | null;
 }
 
-interface InstantCheckFormProps {
-  vehicles: Vehicle[];
-  parkingLots: ParkingLot[];
-}
-
-/* ─── 検索モーダル（スマホ: フルスクリーン / PC: ドロップダウン風） ─── */
-
-interface SearchModalProps<T> {
-  open: boolean;
-  onClose: () => void;
-  title: string;
-  placeholder: string;
-  items: T[];
-  search: string;
-  onSearch: (v: string) => void;
-  onSelect: (item: T) => void;
-  renderItem: (item: T) => React.ReactNode;
-  emptyMessage: string;
-}
-
-function SearchModal<T>({
-  open,
-  onClose,
-  title,
-  placeholder,
-  items,
-  search,
-  onSearch,
-  onSelect,
-  renderItem,
-  emptyMessage,
-}: SearchModalProps<T>) {
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (open) {
-      // モーダル表示時にbodyスクロールを防止
-      document.body.style.overflow = "hidden";
-      // 少し遅延させてフォーカス（モバイルでキーボードが確実に出るように）
-      const timer = setTimeout(() => inputRef.current?.focus(), 100);
-      return () => {
-        clearTimeout(timer);
-        document.body.style.overflow = "";
-      };
-    }
-    document.body.style.overflow = "";
-  }, [open]);
-
-  if (!open) return null;
-
-  return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-background sm:items-center sm:justify-center sm:bg-black/40 sm:supports-backdrop-filter:backdrop-blur-sm">
-      {/* PC: 背景クリックで閉じる */}
-      <div
-        className="hidden sm:fixed sm:inset-0 sm:block"
-        onClick={onClose}
-        aria-hidden
-      />
-
-      <div className="relative flex h-full flex-col sm:mx-4 sm:h-[min(600px,80vh)] sm:w-full sm:max-w-2xl sm:rounded-2xl sm:border sm:bg-background sm:shadow-2xl">
-        {/* ヘッダー + 検索入力 */}
-        <div className="flex-none border-b px-4 pb-4 pt-5 sm:px-6">
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-base font-semibold sm:text-lg">{title}</h2>
-            <button
-              type="button"
-              onClick={onClose}
-              className="flex size-8 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-muted hover:text-foreground sm:size-9"
-            >
-              <X className="size-5" />
-            </button>
-          </div>
-          <div className="flex items-center gap-2 rounded-lg border bg-muted/30 px-3 py-2.5 sm:px-4 sm:py-3">
-            <Search className="size-4 shrink-0 text-muted-foreground sm:size-5" />
-            <input
-              ref={inputRef}
-              type="text"
-              inputMode="search"
-              enterKeyHint="search"
-              autoComplete="off"
-              autoCorrect="off"
-              spellCheck={false}
-              placeholder={placeholder}
-              value={search}
-              onChange={(e) => onSearch(e.target.value)}
-              className="w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground sm:text-base"
-            />
-            {search && (
-              <button
-                type="button"
-                onClick={() => onSearch("")}
-                className="flex size-5 shrink-0 items-center justify-center rounded-full bg-muted-foreground/20 text-muted-foreground"
-              >
-                <X className="size-3" />
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* 候補リスト */}
-        <div className="flex-1 overflow-y-auto overscroll-contain px-2 py-1 sm:px-3 sm:py-2">
-          {items.length === 0 ? (
-            <p className="py-8 text-center text-sm text-muted-foreground">
-              {emptyMessage}
-            </p>
-          ) : (
-            <ul role="listbox">
-              {items.map((item, i) => (
-                <li key={i} role="option" aria-selected={false}>
-                  <button
-                    type="button"
-                    onClick={() => onSelect(item)}
-                    className="flex w-full items-center gap-2 rounded-lg px-3 py-3 text-left text-sm transition-colors active:bg-muted sm:px-4 sm:py-3 sm:text-base sm:hover:bg-muted"
-                  >
-                    <span className="min-w-0 flex-1">{renderItem(item)}</span>
-                    <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
-                  </button>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ─── メインフォーム ─── */
-
 export function InstantCheckForm({
   vehicles,
   parkingLots,
-}: InstantCheckFormProps) {
+}: {
+  vehicles: Vehicle[];
+  parkingLots: ParkingLot[];
+}) {
   const router = useRouter();
-  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
-  const [selectedParking, setSelectedParking] = useState<ParkingLot | null>(null);
-  const [vehicleOpen, setVehicleOpen] = useState(false);
-  const [parkingOpen, setParkingOpen] = useState(false);
-  const [vehicleSearch, setVehicleSearch] = useState("");
-  const [parkingSearch, setParkingSearch] = useState("");
-
-  const filteredVehicles = useMemo(() => {
-    if (!vehicleSearch) return vehicles.slice(0, 30);
-    const q = vehicleSearch.toLowerCase();
-    return vehicles
-      .filter(
-        (v) =>
-          v.name.toLowerCase().includes(q) ||
-          v.makerName.toLowerCase().includes(q) ||
-          `${v.makerName} ${v.name}`.toLowerCase().includes(q)
-      )
-      .slice(0, 30);
-  }, [vehicles, vehicleSearch]);
-
-  const filteredParkingLots = useMemo(() => {
-    if (!parkingSearch) return parkingLots.slice(0, 30);
-    const q = parkingSearch.toLowerCase();
-    return parkingLots
-      .filter(
-        (p) =>
-          p.name.toLowerCase().includes(q) ||
-          (p.address && p.address.toLowerCase().includes(q))
-      )
-      .slice(0, 30);
-  }, [parkingLots, parkingSearch]);
-
-  const openVehicleModal = useCallback(() => {
-    setVehicleOpen(true);
-    setParkingOpen(false);
-  }, []);
-
-  const openParkingModal = useCallback(() => {
-    setParkingOpen(true);
-    setVehicleOpen(false);
-  }, []);
-
-  const handleCheck = () => {
-    if (!selectedVehicle) return;
-    if (selectedParking) {
+  const { myCar } = useMyCar();
+  const [chosen, setChosen] = useState<VehicleSelection | null>(null);
+  const [mode, setMode] = useState<"area" | "parking">("area");
+  const [ward, setWard] = useState("");
+  const [parkingSlug, setParkingSlug] = useState("");
+  const selection =
+    chosen ??
+    (myCar
+      ? {
+          carSlug: myCar.slug,
+          generationId: myCar.generationId,
+          trimId: myCar.trimId,
+        }
+      : null);
+  const vehicle = vehicles.find(
+    (vehicle) => vehicle.slug === selection?.carSlug,
+  );
+  const submit = () => {
+    if (!vehicle || !selection) return;
+    if (mode === "parking" && parkingSlug) {
       trackEvent("parking_check_start", {
         source: "home",
-        car_slug: selectedVehicle.slug,
-        parking_slug: selectedParking.slug,
+        car_slug: vehicle.slug,
+        parking_slug: parkingSlug,
+      });
+      router.push(vehicleHref(`/parking/${parkingSlug}#checker`, selection));
+    } else {
+      trackEvent("car_detail_click", {
+        source: "home",
+        car_slug: vehicle.slug,
       });
       router.push(
-        `/parking/${selectedParking.slug}?car=${selectedVehicle.slug}#checker`
+        vehicleHref(
+          mode === "area" && ward
+            ? `/area/${ward}/car/${vehicle.slug}`
+            : `/car/${vehicle.slug}`,
+          selection,
+        ),
       );
-    } else {
-      trackEvent("car_detail_click", { source: "home", car_slug: selectedVehicle.slug });
-      router.push(`/car/${selectedVehicle.slug}`);
     }
   };
-
   return (
-    <div className="mx-auto w-full max-w-3xl space-y-4">
-      <div className="grid gap-3 sm:grid-cols-2">
-        {/* 車種選択トリガー */}
-        <button
-          type="button"
-          onClick={openVehicleModal}
-          className="flex w-full items-center gap-3 rounded-lg border-2 border-border bg-background px-4 py-3.5 text-left transition-colors hover:border-primary/40 hover:bg-muted sm:px-5 sm:py-4 sm:text-base"
+    <div className="space-y-5">
+      <div className="flex gap-2 border-b pb-3" aria-label="探し方">
+        <Button
+          variant={mode === "area" ? "default" : "ghost"}
+          aria-pressed={mode === "area"}
+          onClick={() => setMode("area")}
+          className="h-11 min-w-0 flex-1 rounded-xl px-2 text-xs sm:text-sm"
         >
-          <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 sm:size-9">
-            <Car className="size-4 text-primary sm:size-5" />
-          </div>
-          {selectedVehicle ? (
-            <span className="truncate font-medium">
-              {selectedVehicle.makerName} {selectedVehicle.name}
-            </span>
-          ) : (
-            <div>
-              <span className="text-sm text-muted-foreground sm:text-base">車種を選択</span>
-              <p className="text-xs text-muted-foreground sm:text-sm">メーカー名・車種名で検索</p>
-            </div>
-          )}
-        </button>
-
-        {/* 駐車場選択トリガー */}
-        <button
-          type="button"
-          onClick={openParkingModal}
-          className="flex w-full items-center gap-3 rounded-lg border-2 border-border bg-background px-4 py-3.5 text-left transition-colors hover:border-primary/40 hover:bg-muted sm:px-5 sm:py-4 sm:text-base"
+          <MapPin className="hidden size-4 sm:block" />
+          エリアから探す
+        </Button>
+        <Button
+          variant={mode === "parking" ? "default" : "ghost"}
+          aria-pressed={mode === "parking"}
+          onClick={() => setMode("parking")}
+          className="h-11 min-w-0 flex-1 rounded-xl px-2 text-xs sm:text-sm"
         >
-          <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10 sm:size-9">
-            <MapPin className="size-4 text-primary sm:size-5" />
-          </div>
-          {selectedParking ? (
-            <span className="truncate font-medium">{selectedParking.name}</span>
-          ) : (
-            <div>
-              <span className="text-sm text-muted-foreground sm:text-base">駐車場を選択（任意）</span>
-              <p className="text-xs text-muted-foreground sm:text-sm">駐車場名・住所で検索</p>
-            </div>
-          )}
-        </button>
+          <Car className="hidden size-4 sm:block" />
+          施設名で判定
+        </Button>
       </div>
-
-      <Button
-        onClick={handleCheck}
-        disabled={!selectedVehicle}
-        className="w-full text-base sm:py-6 sm:text-lg"
-        size="lg"
-      >
-        <Search className="mr-2 size-4 sm:size-5" />
-        {selectedVehicle && selectedParking
-          ? "判定する"
-          : selectedVehicle
-            ? "この車種の詳細を見る"
-            : "車種を選択してください"}
-      </Button>
-
-      {/* 人気の車種クイック選択 */}
-      {!selectedVehicle && (
-        <div className="pt-2">
-          <p className="mb-2 text-xs font-medium text-muted-foreground">人気の車種から選ぶ</p>
-          <div className="flex flex-wrap gap-2">
-            {[
-              { name: "アルファード", slug: "alphard", maker: "トヨタ" },
-              { name: "プリウス", slug: "prius", maker: "トヨタ" },
-              { name: "ヴォクシー", slug: "voxy", maker: "トヨタ" },
-              { name: "ハリアー", slug: "harrier", maker: "トヨタ" },
-              { name: "N-BOX", slug: "n-box", maker: "ホンダ" },
-            ].map((v) => (
-              <button
-                key={v.slug}
-                onClick={() => setSelectedVehicle({ name: v.name, slug: v.slug, makerName: v.maker })}
-                className="rounded-full border bg-background px-3 py-1 text-xs font-medium transition-colors hover:border-primary/50 hover:bg-primary/5"
-              >
-                {v.name}
-              </button>
-            ))}
-          </div>
-        </div>
+      <SearchPicker
+        label="1. あなたの車"
+        placeholder="車種を選ぶ"
+        value={vehicle?.slug}
+        options={vehicles.map((vehicle) => ({
+          id: vehicle.slug,
+          label: vehicle.name,
+          description: vehicle.makerName,
+        }))}
+        onSelect={(slug) => setChosen({ carSlug: slug })}
+      />
+      {!chosen && myCar?.gradeName && (
+        <p className="-mt-2 text-xs leading-6 text-muted-foreground">
+          保存した条件：{myCar.gradeName}
+        </p>
       )}
-
-      {/* 車種検索モーダル */}
-      <SearchModal
-        open={vehicleOpen}
-        onClose={() => {
-          setVehicleOpen(false);
-          setVehicleSearch("");
-        }}
-        title="車種を選択"
-        placeholder="車種名・メーカー名で検索..."
-        items={filteredVehicles}
-        search={vehicleSearch}
-        onSearch={setVehicleSearch}
-        onSelect={(v) => {
-          setSelectedVehicle(v);
-          setVehicleOpen(false);
-          setVehicleSearch("");
-        }}
-        renderItem={(v) => (
-          <span className="truncate">
-            {v.makerName} {v.name}
-          </span>
-        )}
-        emptyMessage="車種が見つかりません"
-      />
-
-      {/* 駐車場検索モーダル */}
-      <SearchModal
-        open={parkingOpen}
-        onClose={() => {
-          setParkingOpen(false);
-          setParkingSearch("");
-        }}
-        title="駐車場を選択"
-        placeholder="駐車場名・住所で検索..."
-        items={filteredParkingLots}
-        search={parkingSearch}
-        onSearch={setParkingSearch}
-        onSelect={(p) => {
-          setSelectedParking(p);
-          setParkingOpen(false);
-          setParkingSearch("");
-        }}
-        renderItem={(p) => (
-          <div className="min-w-0">
-            <p className="truncate">{p.name}</p>
-            {p.address && (
-              <p className="truncate text-xs text-muted-foreground">
-                {p.address}
-              </p>
-            )}
-          </div>
-        )}
-        emptyMessage="駐車場が見つかりません"
-      />
+      {mode === "area" ? (
+        <SearchPicker
+          label="2. 探したいエリア（任意）"
+          placeholder="東京23区から選ぶ"
+          value={ward}
+          options={TOKYO_WARD_MAP.map((ward) => ({
+            id: ward.slug,
+            label: ward.name,
+          }))}
+          onSelect={setWard}
+        />
+      ) : (
+        <SearchPicker
+          label="2. 確認したい駐車場"
+          placeholder="施設名・住所で検索"
+          value={parkingSlug}
+          options={parkingLots.map((parking) => ({
+            id: parking.slug,
+            label: parking.name,
+            description: parking.address ?? undefined,
+          }))}
+          onSelect={setParkingSlug}
+        />
+      )}
+      <Button
+        onClick={submit}
+        disabled={!vehicle || (mode === "parking" && !parkingSlug)}
+        className="h-auto min-h-14 w-full rounded-xl py-3 text-sm font-bold whitespace-normal sm:text-base"
+      >
+        {mode === "parking"
+          ? "この駐車場でサイズを判定"
+          : ward
+            ? "この車の駐車場候補を見る"
+            : "サイズと駐車場を見る"}
+        <ArrowRight className="ml-2 size-5" />
+      </Button>
+      <div className="border-t pt-4">
+        <NearMeButton
+          selection={selection ?? undefined}
+          className="h-11 w-full rounded-xl border-0 text-primary"
+        />
+      </div>
+      <p className="text-center text-xs leading-6 text-muted-foreground">
+        東京23区に対応 · 空車状況の表示ではありません
+      </p>
     </div>
   );
 }

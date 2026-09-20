@@ -22,7 +22,7 @@ const config: Record<
 > = {
   ok: {
     icon: CircleCheck,
-    label: "駐車可能",
+    label: "サイズ条件内",
     shortLabel: "OK",
     bg: "bg-match-ok/10",
     text: "text-match-ok",
@@ -30,7 +30,7 @@ const config: Record<
   },
   ng: {
     icon: CircleX,
-    label: "駐車不可",
+    label: "制限を超過",
     shortLabel: "NG",
     bg: "bg-match-ng/10",
     text: "text-match-ng",

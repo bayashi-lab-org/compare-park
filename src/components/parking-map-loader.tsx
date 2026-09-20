@@ -1,4 +1,5 @@
 "use client";
+import { type VehicleSelection } from "@/lib/vehicle-selection";
 
 import dynamic from "next/dynamic";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -14,6 +15,7 @@ const MapContent = dynamic(() => import("./parking-map"), {
 });
 
 interface Props {
+  selection?: VehicleSelection;
   items: MapItem[];
   center?: [number, number];
   zoom?: number;

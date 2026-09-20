@@ -2,7 +2,7 @@
 
 import { useState, type ComponentProps } from "react";
 import Link from "next/link";
-import { Menu, Search } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -12,6 +12,9 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { HeaderSearch } from "./header-search";
+import { HeaderMyCar } from "./header-my-car";
+import { SearchPicker } from "./search-picker";
+import { useRouter } from "next/navigation";
 
 interface HeaderMobileNavProps {
   navLinks: readonly { href: string; label: string }[];
@@ -20,26 +23,14 @@ interface HeaderMobileNavProps {
 
 export function HeaderMobileNav({ navLinks, vehicles }: HeaderMobileNavProps) {
   const [open, setOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
+  const router = useRouter();
 
   return (
     <div className="flex items-center gap-2">
-      {searchOpen ? (
-        <div className="flex items-center gap-2 animate-in slide-in-from-right-2 duration-200">
-          <HeaderSearch vehicles={vehicles} className="w-[180px]" />
-          <Button variant="ghost" size="icon" onClick={() => setSearchOpen(false)}>
-            <span className="text-xs font-bold">閉じる</span>
-          </Button>
-        </div>
-      ) : (
-        <Button variant="ghost" size="icon" onClick={() => setSearchOpen(true)}>
-          <Search className="size-5" />
-          <span className="sr-only">検索</span>
-        </Button>
-      )}
+      <SearchPicker compact label="車種検索" placeholder="車種を検索" options={vehicles.map((vehicle) => ({ id: vehicle.slug, label: vehicle.name, description: vehicle.makerName }))} onSelect={(slug) => router.push(`/car/${slug}`)} />
 
       <Sheet open={open} onOpenChange={setOpen}>
-        <SheetTrigger render={<Button variant="ghost" size="icon" />}>
+        <SheetTrigger render={<Button variant="ghost" size="icon" className="size-11" />}>
           <Menu className="size-5" />
           <span className="sr-only">メニューを開く</span>
         </SheetTrigger>
@@ -49,7 +40,8 @@ export function HeaderMobileNav({ navLinks, vehicles }: HeaderMobileNavProps) {
               <span className="text-primary">トメピタ</span>
             </SheetTitle>
           </SheetHeader>
-          <nav className="mt-8 flex flex-col gap-4">
+          <div className="px-4"><HeaderMyCar /></div>
+          <nav className="mt-6 flex flex-col gap-4 px-4">
             {navLinks.map((link) => (
               <Link
                 key={link.href}

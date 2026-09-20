@@ -20,6 +20,7 @@ test("タグ読み込み済みならgtagへ一度だけ送る", () => {
 });
 
 test("記事CTAから住所・座標・クエリ文字列を送らない", () => {
+  assert.deepEqual(getArticleCtaParameters("/car", "size-guide/width-1850"), { article_slug: "size-guide/width-1850", target_type: "car_catalog", target_slug: "all" });
   assert.deepEqual(getArticleCtaParameters("/car/alphard?lat=35&lng=139#checker", "cars/alphard"), { article_slug: "cars/alphard", target_type: "car", target_slug: "alphard" });
   assert.equal(getArticleCtaParameters("https://example.com/", "cars/alphard"), null);
   assert.equal(getArticleCtaParameters("/articles/cars/alphard", "cars/alphard"), null);

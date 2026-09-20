@@ -1,7 +1,14 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { MapPin, Clock, Phone, ExternalLink, CalendarDays, Car } from "lucide-react";
+import {
+  MapPin,
+  Clock,
+  Phone,
+  ExternalLink,
+  CalendarDays,
+  Car,
+} from "lucide-react";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Breadcrumb } from "@/components/breadcrumb";
@@ -20,7 +27,11 @@ import {
   getRelatedParkingLotsByWard,
   getPopularModelsWithDimensions,
 } from "@/lib/queries";
-import { calculateMatch, matchSortOrder, type MatchResult } from "@/lib/matching";
+import {
+  calculateMatch,
+  matchSortOrder,
+  type MatchResult,
+} from "@/lib/matching";
 import { getWardSlug } from "@/lib/constants";
 
 const parkingTypeLabels: Record<string, string> = {
@@ -87,13 +98,15 @@ export default async function ParkingDetailPage({ params }: Props) {
   const lot = await getParkingLotBySlug(slug);
   if (!lot) notFound();
 
-  const [restrictions, fees, hours, allDims, popularModels] = await Promise.all([
-    getRestrictionsByParkingLotId(lot.id),
-    getFeesByParkingLotId(lot.id),
-    getOperatingHoursByParkingLotId(lot.id),
-    getAllDimensions(),
-    getPopularModelsWithDimensions(),
-  ]);
+  const [restrictions, fees, hours, allDims, popularModels] = await Promise.all(
+    [
+      getRestrictionsByParkingLotId(lot.id),
+      getFeesByParkingLotId(lot.id),
+      getOperatingHoursByParkingLotId(lot.id),
+      getAllDimensions(),
+      getPopularModelsWithDimensions(),
+    ],
+  );
 
   // 人気車種のうち、この駐車場に「OK」で停められるものを抽出
   const okPopularModels = popularModels.filter((model) => {
@@ -110,7 +123,7 @@ export default async function ParkingDetailPage({ params }: Props) {
           max_width_mm: r.max_width_mm,
           max_height_mm: r.max_height_mm,
           max_weight_kg: r.max_weight_kg,
-        }
+        },
       );
       return match.result === "ok";
     });
@@ -163,7 +176,7 @@ export default async function ParkingDetailPage({ params }: Props) {
           max_width_mm: r.max_width_mm,
           max_height_mm: r.max_height_mm,
           max_weight_kg: r.max_weight_kg,
-        }
+        },
       );
       if (matchSortOrder(match.result) < matchSortOrder(bestResult)) {
         bestResult = match.result;
@@ -184,7 +197,7 @@ export default async function ParkingDetailPage({ params }: Props) {
   }
 
   const vehicleResults = Array.from(vehicleMap.values()).sort(
-    (a, b) => matchSortOrder(a.result) - matchSortOrder(b.result)
+    (a, b) => matchSortOrder(a.result) - matchSortOrder(b.result),
   );
 
   // VehicleMatchList用のデータ
@@ -209,6 +222,8 @@ export default async function ParkingDetailPage({ params }: Props) {
 
   // InlineParkingChecker用の制限データ
   const restrictionsForChecker = restrictions.map((r) => ({
+    restriction_name: r.restriction_name,
+    notes: r.notes,
     max_length_mm: r.max_length_mm,
     max_width_mm: r.max_width_mm,
     max_height_mm: r.max_height_mm,
@@ -218,16 +233,30 @@ export default async function ParkingDetailPage({ params }: Props) {
   // 営業時間のJSON-LD用データ
   const openingHoursSpec = hours.map((h) => ({
     "@type": "OpeningHoursSpecification",
-    dayOfWeek: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][h.day_of_week],
+    dayOfWeek: [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+    ][h.day_of_week],
     ...(h.is_24h
       ? { opens: "00:00", closes: "23:59" }
       : { opens: h.open_time ?? "00:00", closes: h.close_time ?? "23:59" }),
   }));
 
   // 料金表示用テキスト
-  const priceRangeText = fees.length > 0
-    ? fees.map((f) => `${feeTypeLabels[f.fee_type] ?? f.fee_type}: ${f.amount_yen.toLocaleString()}円${f.duration_minutes ? ` / ${f.duration_minutes}分` : ""}`).join("、")
-    : null;
+  const priceRangeText =
+    fees.length > 0
+      ? fees
+          .map(
+            (f) =>
+              `${feeTypeLabels[f.fee_type] ?? f.fee_type}: ${f.amount_yen.toLocaleString()}円${f.duration_minutes ? ` / ${f.duration_minutes}分` : ""}`,
+          )
+          .join("、")
+      : null;
 
   // FAQ構造化データ
   const faqItems: { question: string; answer: string }[] = [];
@@ -236,10 +265,14 @@ export default async function ParkingDetailPage({ params }: Props) {
     const restrictionText = restrictions
       .map((r) => {
         const parts: string[] = [];
-        if (r.max_length_mm != null) parts.push(`全長${r.max_length_mm.toLocaleString()}mm`);
-        if (r.max_width_mm != null) parts.push(`全幅${r.max_width_mm.toLocaleString()}mm`);
-        if (r.max_height_mm != null) parts.push(`全高${r.max_height_mm.toLocaleString()}mm`);
-        if (r.max_weight_kg != null) parts.push(`重量${r.max_weight_kg.toLocaleString()}kg`);
+        if (r.max_length_mm != null)
+          parts.push(`全長${r.max_length_mm.toLocaleString()}mm`);
+        if (r.max_width_mm != null)
+          parts.push(`全幅${r.max_width_mm.toLocaleString()}mm`);
+        if (r.max_height_mm != null)
+          parts.push(`全高${r.max_height_mm.toLocaleString()}mm`);
+        if (r.max_weight_kg != null)
+          parts.push(`重量${r.max_weight_kg.toLocaleString()}kg`);
         return `${r.restriction_name}: ${parts.join("、")}`;
       })
       .join("。");
@@ -251,7 +284,10 @@ export default async function ParkingDetailPage({ params }: Props) {
 
   if (hours.length > 0) {
     const hoursText = hours
-      .map((h) => `${dayLabels[h.day_of_week]}: ${h.is_24h ? "24時間" : `${h.open_time ?? "-"} - ${h.close_time ?? "-"}`}`)
+      .map(
+        (h) =>
+          `${dayLabels[h.day_of_week]}: ${h.is_24h ? "24時間" : `${h.open_time ?? "-"} - ${h.close_time ?? "-"}`}`,
+      )
       .join("、");
     faqItems.push({
       question: `${lot.name}の営業時間は？`,
@@ -267,18 +303,31 @@ export default async function ParkingDetailPage({ params }: Props) {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+    <div className="mx-auto max-w-4xl px-4 py-6 sm:px-6 sm:py-10">
       <JsonLd
         data={{
           "@context": "https://schema.org",
           "@type": "ParkingFacility",
           name: lot.name,
           url: `https://www.tomepita.com/parking/${slug}`,
-          ...(lot.address ? { address: { "@type": "PostalAddress", streetAddress: lot.address, addressLocality: "東京都", addressCountry: "JP" } } : {}),
+          ...(lot.address
+            ? {
+                address: {
+                  "@type": "PostalAddress",
+                  streetAddress: lot.address,
+                  addressLocality: "東京都",
+                  addressCountry: "JP",
+                },
+              }
+            : {}),
           ...(lot.phone ? { telephone: lot.phone } : {}),
           ...(lot.url ? { sameAs: lot.url } : {}),
-          ...(lot.total_spaces != null ? { maximumAttendeeCapacity: lot.total_spaces } : {}),
-          ...(openingHoursSpec.length > 0 ? { openingHoursSpecification: openingHoursSpec } : {}),
+          ...(lot.total_spaces != null
+            ? { maximumAttendeeCapacity: lot.total_spaces }
+            : {}),
+          ...(openingHoursSpec.length > 0
+            ? { openingHoursSpecification: openingHoursSpec }
+            : {}),
           ...(priceRangeText ? { priceRange: priceRangeText } : {}),
         }}
       />
@@ -301,7 +350,9 @@ export default async function ParkingDetailPage({ params }: Props) {
       <Breadcrumb
         items={[
           { label: "トップ", href: "/" },
-          ...(ward && wardSlug ? [{ label: ward, href: `/area/${wardSlug}` }] : []),
+          ...(ward && wardSlug
+            ? [{ label: ward, href: `/area/${wardSlug}` }]
+            : []),
           { label: lot.name },
         ]}
         currentPath={`/parking/${slug}`}
@@ -310,7 +361,9 @@ export default async function ParkingDetailPage({ params }: Props) {
       {/* 駐車場基本情報 */}
       <div className="mb-8">
         <div className="flex items-center gap-3">
-          <h1 className="text-3xl font-bold">{lot.name}</h1>
+          <h1 className="min-w-0 text-2xl font-bold leading-snug sm:text-3xl">
+            {lot.name}
+          </h1>
           {lot.parking_type && (
             <Badge variant="outline">
               {parkingTypeLabels[lot.parking_type] ?? lot.parking_type}
@@ -344,33 +397,55 @@ export default async function ParkingDetailPage({ params }: Props) {
           {(lot.url || lot.source_url) && (
             <p className="flex items-center gap-2">
               <ExternalLink className="size-4 shrink-0" />
-              <OfficialSiteLink href={(lot.url || lot.source_url)!} parkingSlug={lot.slug} />
+              <OfficialSiteLink
+                href={(lot.url || lot.source_url)!}
+                parkingSlug={lot.slug}
+              />
             </p>
           )}
-          {lot.total_spaces != null && (
-            <p>総台数: {lot.total_spaces}台</p>
-          )}
+          {lot.total_spaces != null && <p>総台数: {lot.total_spaces}台</p>}
           {lot.notes && <p>{lot.notes}</p>}
         </div>
+      </div>
 
-        {/* Googleマップ */}
-        {(lot.latitude && lot.longitude) || lot.address ? (
-          <div className="mt-4 overflow-hidden rounded-lg border">
-            <iframe
-              title={`${lot.name}の地図`}
-              width="100%"
-              height="300"
-              style={{ border: 0 }}
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-              src={
-                lot.latitude && lot.longitude
-                  ? `https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&q=${lot.latitude},${lot.longitude}&zoom=16`
-                  : `https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(lot.address!)}&zoom=16`
-              }
-            />
+      {/* 最優先の操作を施設の基本情報の直後に配置 */}
+      <section
+        id="checker"
+        className="mb-8 scroll-mt-24 rounded-2xl border border-primary/20 bg-white p-5 shadow-sm sm:p-8"
+      >
+        <div className="mb-6 flex items-center gap-3">
+          <span className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <Car className="size-5" />
+          </span>
+          <div>
+            <h2 className="text-xl font-bold">
+              この駐車場に、あなたの車は入る？
+            </h2>
+            <p className="mt-1 text-xs text-muted-foreground">
+              車とグレードを選んでサイズを比較
+            </p>
           </div>
-        ) : null}
+        </div>
+        {restrictions.length > 0 && vehiclesForChecker.length > 0 ? (
+          <InlineParkingChecker
+            key={lot.slug}
+            parkingSlug={lot.slug}
+            restrictions={restrictionsForChecker}
+            vehicles={vehiclesForChecker}
+            officialUrl={lot.url || lot.source_url}
+            mapUrl={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${lot.name} ${lot.address ?? ""}`)}`}
+          />
+        ) : (
+          <p className="text-sm leading-7 text-muted-foreground">
+            制限サイズが未登録のため、ここでは判定できません。施設の公式サイトで入庫条件をご確認ください。
+          </p>
+        )}
+      </section>
+      <div className="mb-6 border-b pb-3">
+        <h2 className="text-xl font-bold">施設の基本情報</h2>
+        <p className="mt-1 text-sm text-muted-foreground">
+          料金・営業時間・詳しい制限を確認できます。
+        </p>
       </div>
 
       {/* 営業時間 */}
@@ -414,9 +489,7 @@ export default async function ParkingDetailPage({ params }: Props) {
                   <span>{feeTypeLabels[f.fee_type] ?? f.fee_type}</span>
                   <span className="font-medium">
                     {f.amount_yen.toLocaleString()}円
-                    {f.duration_minutes
-                      ? ` / ${f.duration_minutes}分`
-                      : ""}
+                    {f.duration_minutes ? ` / ${f.duration_minutes}分` : ""}
                   </span>
                 </div>
               ))}
@@ -424,6 +497,41 @@ export default async function ParkingDetailPage({ params }: Props) {
           </CardContent>
         </Card>
       )}
+
+      <details className="mb-8 rounded-2xl border bg-white p-5">
+        <summary className="cursor-pointer py-1 font-bold">
+          地図・アクセスを見る
+        </summary>
+        {/* Googleマップ */}
+        {(lot.latitude && lot.longitude) || lot.address ? (
+          <div className="mt-4 overflow-hidden rounded-lg border">
+            {process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY ? (
+              <iframe
+                title={`${lot.name}の地図`}
+                width="100%"
+                height="300"
+                style={{ border: 0 }}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                src={
+                  lot.latitude && lot.longitude
+                    ? `https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&q=${lot.latitude},${lot.longitude}&zoom=16`
+                    : `https://www.google.com/maps/embed/v1/place?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&q=${encodeURIComponent(lot.address!)}&zoom=16`
+                }
+              />
+            ) : (
+              <a
+                className="block p-5 text-sm font-bold text-primary underline"
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${lot.name} ${lot.address ?? ""}`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Googleマップで地図・経路を見る
+              </a>
+            )}
+          </div>
+        ) : null}
+      </details>
 
       {/* 制限値一覧 */}
       <section className="mb-8">
@@ -433,44 +541,60 @@ export default async function ParkingDetailPage({ params }: Props) {
             {restrictions.map((r) => (
               <Card key={r.id}>
                 <CardHeader>
-                  <CardTitle className="text-base">{r.restriction_name}</CardTitle>
+                  <CardTitle className="text-base">
+                    {r.restriction_name}
+                  </CardTitle>
                   {r.spaces_count != null && (
-                    <p className="text-sm text-muted-foreground">{r.spaces_count}台</p>
+                    <p className="text-sm text-muted-foreground">
+                      {r.spaces_count}台
+                    </p>
                   )}
                 </CardHeader>
                 <CardContent className="space-y-1 text-sm">
                   {r.max_length_mm != null && (
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">全長</span>
-                      <span className="font-medium">{r.max_length_mm.toLocaleString()}mm</span>
+                      <span className="font-medium">
+                        {r.max_length_mm.toLocaleString()}mm
+                      </span>
                     </div>
                   )}
                   {r.max_width_mm != null && (
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">全幅</span>
-                      <span className="font-medium">{r.max_width_mm.toLocaleString()}mm</span>
+                      <span className="font-medium">
+                        {r.max_width_mm.toLocaleString()}mm
+                      </span>
                     </div>
                   )}
                   {r.max_height_mm != null && (
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">全高</span>
-                      <span className="font-medium">{r.max_height_mm.toLocaleString()}mm</span>
+                      <span className="font-medium">
+                        {r.max_height_mm.toLocaleString()}mm
+                      </span>
                     </div>
                   )}
                   {r.max_weight_kg != null && (
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">重量</span>
-                      <span className="font-medium">{r.max_weight_kg.toLocaleString()}kg</span>
+                      <span className="font-medium">
+                        {r.max_weight_kg.toLocaleString()}kg
+                      </span>
                     </div>
                   )}
                   {r.monthly_fee_yen != null && (
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">月額</span>
-                      <span className="font-medium">{r.monthly_fee_yen.toLocaleString()}円</span>
+                      <span className="font-medium">
+                        {r.monthly_fee_yen.toLocaleString()}円
+                      </span>
                     </div>
                   )}
                   {r.notes && (
-                    <p className="pt-1 text-xs text-muted-foreground">{r.notes}</p>
+                    <p className="pt-1 text-xs text-muted-foreground">
+                      {r.notes}
+                    </p>
                   )}
                 </CardContent>
               </Card>
@@ -485,46 +609,39 @@ export default async function ParkingDetailPage({ params }: Props) {
         )}
       </section>
 
-          {/* この駐車場に停められる人気の車種 */}
-          {okPopularModels.length > 0 && (
-            <section className="mb-10">
-              <h2 className="mb-4 text-xl font-bold">{lot.name}に停められる人気の車種</h2>
-              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-                {okPopularModels.map((m) => (
-                  <Link
-                    key={m.slug}
-                    href={`/car/${m.slug}`}
-                    className="group flex items-center gap-3 rounded-xl border bg-background p-3 transition-all hover:border-primary/50 hover:bg-muted/50 hover:shadow-md"
-                  >
-                    <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                      <Car className="size-5" />
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-[10px] text-muted-foreground">{m.maker_name}</p>
-                      <p className="truncate text-sm font-bold group-hover:text-primary">{m.name}</p>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </section>
-          )}
-
-          {/* あなたの車は停められる？ */}
-          {restrictions.length > 0 && vehiclesForChecker.length > 0 && (
-            <section id="checker" className="mb-10 scroll-mt-20">
-              <h2 className="mb-4 text-xl font-bold">あなたの車は停められる？</h2>
-              <div className="rounded-lg border bg-muted/30 p-4">
-                <InlineParkingChecker
-                  parkingSlug={lot.slug}
-                  restrictions={restrictionsForChecker}
-                  vehicles={vehiclesForChecker}
-                />
-              </div>
-            </section>
-          )}
+      {/* この駐車場に停められる人気の車種 */}
+      {okPopularModels.length > 0 && (
+        <section className="mb-10">
+          <h2 className="mb-4 text-xl font-bold">サイズ条件に合う車の例</h2>
+          <p className="mb-4 text-sm text-muted-foreground">
+            代表グレードでの比較です。お乗りのグレードは上のフォームでご確認ください。
+          </p>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {okPopularModels.slice(0, 6).map((m) => (
+              <Link
+                key={m.slug}
+                href={`/car/${m.slug}`}
+                className="group flex items-center gap-3 rounded-xl border bg-background p-3 transition-all hover:border-primary/50 hover:bg-muted/50 hover:shadow-md"
+              >
+                <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <Car className="size-5" />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[10px] text-muted-foreground">
+                    {m.maker_name}
+                  </p>
+                  <p className="truncate text-sm font-bold group-hover:text-primary">
+                    {m.name}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* 車種との適合判定 */}
-      <section>
+      <section id="all-vehicles" className="scroll-mt-24">
         <h2 className="mb-6 text-2xl font-bold">車種との適合判定</h2>
         {vehicleMatchItems.length > 0 ? (
           <VehicleMatchList items={vehicleMatchItems} />

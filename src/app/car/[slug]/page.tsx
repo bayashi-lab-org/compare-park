@@ -1,7 +1,12 @@
+import {
+  resolveVehicleGrade,
+  vehicleHref,
+  gradeLabel,
+} from "@/lib/vehicle-selection";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Weight, MoveHorizontal, MoveVertical, ArrowUpDown, CalendarDays } from "lucide-react";
+import { CalendarDays } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Breadcrumb } from "@/components/breadcrumb";
@@ -95,25 +100,16 @@ export default async function CarDetailPage({ params, searchParams }: Props) {
 
   const relatedArticles = getArticlesByCarSlug(slug);
 
-  // 選択中のトリムを決定
-  const genId = gen ? Number(gen) : null;
-  const trimId = trimParam ? Number(trimParam) : null;
+  const selectedTrim = resolveVehicleGrade(allTrims, {
+    generationId: gen !== undefined ? Number(gen) : undefined,
+    trimId: trimParam !== undefined ? Number(trimParam) : undefined,
+  });
+  const vehicleSelection = {
+    carSlug: slug,
+    generationId: selectedTrim?.generationId,
+    trimId: selectedTrim?.trimId,
+  };
 
-  let selectedTrim = allTrims.length > 0 ? allTrims[0] : null;
-
-  if (genId != null && trimId != null) {
-    // クエリパラメータで指定されたトリムを検索
-    const found = allTrims.find(
-      (t) => t.generationId === genId && t.trimId === trimId
-    );
-    if (found) selectedTrim = found;
-  } else if (genId != null) {
-    // 世代だけ指定された場合、その世代の最初のトリム
-    const found = allTrims.find((t) => t.generationId === genId);
-    if (found) selectedTrim = found;
-  }
-
-  // 寸法データ（選択中トリムから）
   const dimension = selectedTrim
     ? {
         length_mm: selectedTrim.lengthMm,
@@ -127,6 +123,7 @@ export default async function CarDetailPage({ params, searchParams }: Props) {
   const trimSelectorData = allTrims.map((t) => ({
     generationId: t.generationId,
     generationName: t.generationName,
+    phaseName: t.phaseName,
     startYear: t.startYear,
     endYear: t.endYear,
     trimId: t.trimId,
@@ -141,7 +138,10 @@ export default async function CarDetailPage({ params, searchParams }: Props) {
   }));
 
   // 各駐車場制限とのマッチング判定（共通パイプライン）
-  const { items: parkingMatchItems } = buildParkingMatchItems(dimension, restrictions);
+  const { items: parkingMatchItems } = buildParkingMatchItems(
+    dimension,
+    restrictions,
+  );
 
   // FAQ構造化データ生成
   const okCount = parkingMatchItems.filter((r) => r.result === "ok").length;
@@ -187,16 +187,36 @@ export default async function CarDetailPage({ params, searchParams }: Props) {
                 vehicleSpecialUsage: "駐車場適合判定",
                 additionalProperty: [
                   dimension.length_mm != null
-                    ? { "@type": "PropertyValue", name: "全長", value: dimension.length_mm, unitCode: "MMT" }
+                    ? {
+                        "@type": "PropertyValue",
+                        name: "全長",
+                        value: dimension.length_mm,
+                        unitCode: "MMT",
+                      }
                     : null,
                   dimension.width_mm != null
-                    ? { "@type": "PropertyValue", name: "全幅", value: dimension.width_mm, unitCode: "MMT" }
+                    ? {
+                        "@type": "PropertyValue",
+                        name: "全幅",
+                        value: dimension.width_mm,
+                        unitCode: "MMT",
+                      }
                     : null,
                   dimension.height_mm != null
-                    ? { "@type": "PropertyValue", name: "全高", value: dimension.height_mm, unitCode: "MMT" }
+                    ? {
+                        "@type": "PropertyValue",
+                        name: "全高",
+                        value: dimension.height_mm,
+                        unitCode: "MMT",
+                      }
                     : null,
                   dimension.weight_kg != null
-                    ? { "@type": "PropertyValue", name: "重量", value: dimension.weight_kg, unitCode: "KGM" }
+                    ? {
+                        "@type": "PropertyValue",
+                        name: "重量",
+                        value: dimension.weight_kg,
+                        unitCode: "KGM",
+                      }
                     : null,
                 ].filter(Boolean),
               }
@@ -234,7 +254,9 @@ export default async function CarDetailPage({ params, searchParams }: Props) {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <div className="flex items-center gap-3">
-              <h1 className="text-3xl font-bold">{model.name}の寸法と駐車場適合</h1>
+              <h1 className="text-3xl font-bold">
+                {model.name}の寸法と駐車場適合
+              </h1>
               <Badge variant="outline">
                 {bodyTypeLabels[model.body_type] ?? model.body_type}
               </Badge>
@@ -254,6 +276,9 @@ export default async function CarDetailPage({ params, searchParams }: Props) {
           </div>
           <div className="shrink-0">
             <MyCarToggle
+              generationId={selectedTrim?.generationId}
+              trimId={selectedTrim?.trimId}
+              gradeName={selectedTrim ? gradeLabel(selectedTrim) : undefined}
               slug={model.slug}
               name={model.name}
               makerName={model.maker_name}
@@ -267,131 +292,77 @@ export default async function CarDetailPage({ params, searchParams }: Props) {
       </div>
 
       {/* 世代・グレード選択 */}
-      {allTrims.length > 0 && selectedTrim && (
+      {allTrims.length > 0 && (
         <TrimSelector
           trims={trimSelectorData}
-          selectedGenerationId={selectedTrim.generationId}
-          selectedTrimId={selectedTrim.trimId}
+          selectedGenerationId={selectedTrim?.generationId ?? null}
+          selectedTrimId={selectedTrim?.trimId ?? null}
           carSlug={slug}
         />
       )}
 
-      {/* 寸法サマリー */}
-      {dimension && (
-        <div className="mb-10 space-y-6">
-          <h2 className="text-xl font-bold">サイズ詳細と駐車場制限の比較</h2>
-          <div className="grid gap-4 sm:grid-cols-2">
-            {dimension.height_mm != null && (
-              <DimensionVisualizer
-                label="全高 (高さ)"
-                value={dimension.height_mm}
-                limits={[
-                  { value: 1550, label: "普通車" },
-                  { value: 1800, label: "ミドル" },
-                  { value: 2000, label: "ハイルーフ" },
-                ]}
-              />
-            )}
-            {dimension.width_mm != null && (
-              <DimensionVisualizer
-                label="全幅 (車幅)"
-                value={dimension.width_mm}
-                limits={[
-                  { value: 1850, label: "標準" },
-                  { value: 1900, label: "ワイド" },
-                  { value: 2050, label: "大型" },
-                ]}
-              />
-            )}
-            {dimension.length_mm != null && (
-              <DimensionVisualizer
-                label="全長 (長さ)"
-                value={dimension.length_mm}
-                limits={[
-                  { value: 5000, label: "標準" },
-                  { value: 5300, label: "ロング" },
-                ]}
-              />
-            )}
-            {dimension.weight_kg != null && (
-              <DimensionVisualizer
-                label="重量"
-                value={dimension.weight_kg}
-                unit="kg"
-                limits={[
-                  { value: 2000, label: "標準" },
-                  { value: 2300, label: "重量車" },
-                  { value: 2500, label: "超重量" },
-                ]}
-              />
-            )}
-          </div>
-          
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {dimension.length_mm != null && (
-            <Card>
-              <CardContent className="flex items-center gap-3 pt-2">
-                <MoveHorizontal className="size-8 text-primary" />
-                <div>
-                  <p className="text-sm text-muted-foreground">全長</p>
-                  <p className="text-2xl font-bold">
-                    {dimension.length_mm.toLocaleString()}
-                    <span className="text-sm font-normal text-muted-foreground">mm</span>
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-          {dimension.width_mm != null && (
-            <Card>
-              <CardContent className="flex items-center gap-3 pt-2">
-                <MoveVertical className="size-8 text-primary" />
-                <div>
-                  <p className="text-sm text-muted-foreground">全幅</p>
-                  <p className="text-2xl font-bold">
-                    {dimension.width_mm.toLocaleString()}
-                    <span className="text-sm font-normal text-muted-foreground">mm</span>
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-          {dimension.height_mm != null && (
-            <Card>
-              <CardContent className="flex items-center gap-3 pt-2">
-                <ArrowUpDown className="size-8 text-primary" />
-                <div>
-                  <p className="text-sm text-muted-foreground">全高</p>
-                  <p className="text-2xl font-bold">
-                    {dimension.height_mm.toLocaleString()}
-                    <span className="text-sm font-normal text-muted-foreground">mm</span>
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-          {dimension.weight_kg != null && (
-            <Card>
-              <CardContent className="flex items-center gap-3 pt-2">
-                <Weight className="size-8 text-primary" />
-                <div>
-                  <p className="text-sm text-muted-foreground">重量</p>
-                  <p className="text-2xl font-bold">
-                    {dimension.weight_kg.toLocaleString()}
-                    <span className="text-sm font-normal text-muted-foreground">kg</span>
-                  </p>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-          </div>
+      {dimension && selectedTrim && (
+        <div className="mb-8 rounded-2xl border bg-white p-5 sm:p-6">
+          <p className="text-xs font-bold text-primary">
+            {trimParam
+              ? "このグレードで比較しています"
+              : "代表グレードを表示中 · お乗りのグレードを確認してください"}
+          </p>
+          <p className="mt-2 text-sm leading-6">{gradeLabel(selectedTrim)}</p>
+          <dl className="mt-5 grid grid-cols-2 gap-4 sm:grid-cols-4">
+            {[
+              { label: "全長", value: dimension.length_mm, unit: "mm" },
+              { label: "全幅", value: dimension.width_mm, unit: "mm" },
+              { label: "全高", value: dimension.height_mm, unit: "mm" },
+              { label: "重量", value: dimension.weight_kg, unit: "kg" },
+            ].map((item) => (
+              <div key={item.label}>
+                <dt className="text-xs text-muted-foreground">{item.label}</dt>
+                <dd className="mt-1 text-2xl font-bold tabular-nums">
+                  {item.value?.toLocaleString() ?? "—"}
+                  <span className="ml-1 text-xs font-normal text-muted-foreground">
+                    {item.unit}
+                  </span>
+                </dd>
+              </div>
+            ))}
+          </dl>
+          <details className="mt-5 border-t pt-4">
+            <summary className="cursor-pointer text-sm font-bold text-primary">
+              よくある駐車場制限と比較する
+            </summary>
+            <div className="mt-5 grid gap-4 sm:grid-cols-2">
+              {dimension.height_mm != null && (
+                <DimensionVisualizer
+                  label="全高 (高さ)"
+                  value={dimension.height_mm}
+                  limits={[
+                    { value: 1550, label: "普通車" },
+                    { value: 1800, label: "ミドル" },
+                    { value: 2000, label: "ハイルーフ" },
+                  ]}
+                />
+              )}
+              {dimension.width_mm != null && (
+                <DimensionVisualizer
+                  label="全幅 (車幅)"
+                  value={dimension.width_mm}
+                  limits={[
+                    { value: 1850, label: "標準" },
+                    { value: 1900, label: "ワイド" },
+                    { value: 2050, label: "大型" },
+                  ]}
+                />
+              )}
+            </div>
+          </details>
         </div>
       )}
 
       {!dimension && (
         <Card className="mb-10">
           <CardContent className="py-8 text-center text-muted-foreground">
-            この車種の寸法データはまだ登録されていません。
+            指定のグレードの寸法を確認できません。車種一覧から選び直してください。
           </CardContent>
         </Card>
       )}
@@ -399,14 +370,21 @@ export default async function CarDetailPage({ params, searchParams }: Props) {
       {/* エリア検索ミニフォーム */}
       <div className="mb-10 rounded-lg border bg-muted/30 p-4">
         <h3 className="mb-3 text-sm font-semibold">この車で駐車場を探す</h3>
-        <AreaSearchMini carSlug={slug} />
+        <AreaSearchMini carSlug={slug} selection={vehicleSelection} />
       </div>
 
       {/* 停められる駐車場一覧 */}
-      <section>
-        <h2 className="mb-6 text-2xl font-bold">駐車場との適合判定</h2>
+      <section id="parking-results" className="scroll-mt-24">
+        <h2 className="mb-2 text-2xl font-bold">この車の駐車場候補</h2>
+        <p className="mb-6 text-sm leading-7 text-muted-foreground">
+          選択したグレードと施設の制限を比較しています。空車情報ではありません。
+        </p>
         {parkingMatchItems.length > 0 ? (
-          <ParkingMatchList items={parkingMatchItems} showAreaFilter />
+          <ParkingMatchList
+            selection={vehicleSelection}
+            items={parkingMatchItems}
+            showAreaFilter
+          />
         ) : (
           <Card>
             <CardContent className="py-8 text-center text-muted-foreground">
@@ -420,12 +398,17 @@ export default async function CarDetailPage({ params, searchParams }: Props) {
 
       {/* エリア別に見る */}
       <section className="mt-10">
-        <h2 className="mb-4 text-lg font-bold">エリア別に{model.name}の適合を見る</h2>
+        <h2 className="mb-4 text-lg font-bold">
+          エリア別に{model.name}の適合を見る
+        </h2>
         <div className="flex flex-wrap gap-2">
           {TOKYO_WARD_MAP.map((w) => (
             <Link
               key={w.slug}
-              href={`/area/${w.slug}/car/${slug}`}
+              href={vehicleHref(
+                `/area/${w.slug}/car/${slug}`,
+                vehicleSelection,
+              )}
               className="rounded-lg border border-border px-3 py-1.5 text-sm transition-colors hover:bg-muted"
             >
               {w.name}
@@ -460,7 +443,9 @@ export default async function CarDetailPage({ params, searchParams }: Props) {
       {/* 同メーカーの他車種 */}
       {relatedModels.length > 0 && (
         <section className="mt-10">
-          <h2 className="mb-4 text-lg font-bold">{model.maker_name}の他の車種</h2>
+          <h2 className="mb-4 text-lg font-bold">
+            {model.maker_name}の他の車種
+          </h2>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {relatedModels.map((m) => (
               <Link
