@@ -52,3 +52,4 @@ local.db-wal
 # Sentry Config File
 .env.sentry-build-plugin
 .playwright-mcp/
+.gstack/

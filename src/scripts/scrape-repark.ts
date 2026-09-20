@@ -8,6 +8,7 @@
  */
 
 import { writeFileSync } from "fs";
+import { extractTokyoParkingAddress, isCarParkingName } from "../lib/parking-data-quality";
 
 const BASE_URL = "https://www.repark.jp";
 
@@ -206,10 +207,11 @@ async function fetchParkingDetail(parkCode: string): Promise<ReparkParking | nul
     }
 
     // 住所（東京都○○区○○の部分のみ抽出、余計な情報を除去）
-    const addressMatch = html.match(/東京都[^<"。]+?[区市][^<"。]*?(?:丁目[^\d<"。]*\d*|[\d\-]+)/);
-    let address = addressMatch ? addressMatch[0].replace(/&nbsp;/g, " ").trim() : "";
-    // 「。」以降や「営業時間」以降を除去
-    address = address.replace(/[。][\s\S]*/, "").replace(/営業時間[\s\S]*/, "").replace(/高さ[\s\S]*/, "").trim();
+    const address = extractTokyoParkingAddress(html);
+    if (!isCarParkingName(name) || !address) {
+      console.log(`  ⏭️  スキップ (乗用車対象外または住所未確認): ${parkCode}`);
+      return null;
+    }
 
     // 座標
     let latitude = 0;

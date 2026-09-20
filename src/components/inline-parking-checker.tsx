@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, Suspense } from "react";
+import { useState, useMemo, useEffect, useRef, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Car } from "lucide-react";
 import { MatchBadge } from "@/components/match-badge";
@@ -14,6 +14,7 @@ import {
   CommandItem,
 } from "@/components/ui/command";
 import { calculateMatch } from "@/lib/matching";
+import { trackEvent } from "@/lib/analytics";
 
 interface VehicleDim {
   slug: string;
@@ -33,6 +34,7 @@ interface Restriction {
 }
 
 interface InlineParkingCheckerProps {
+  parkingSlug: string;
   restrictions: Restriction[];
   vehicles: VehicleDim[];
 }
@@ -52,6 +54,7 @@ function InlineParkingCheckerWithParams(props: InlineParkingCheckerProps) {
 }
 
 function InlineParkingCheckerInner({
+  parkingSlug,
   restrictions,
   vehicles,
   initialCarSlug,
@@ -61,6 +64,7 @@ function InlineParkingCheckerInner({
   );
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const lastTracked = useRef<string | null>(null);
 
   const filteredVehicles = useMemo(() => {
     if (!search) return vehicles.slice(0, 20);
@@ -110,6 +114,20 @@ function InlineParkingCheckerInner({
     return best;
   }, [selected, restrictions]);
 
+  useEffect(() => {
+    if (!selected || !matchResult || matchResult.details.length === 0) return;
+    const fingerprint = JSON.stringify([parkingSlug, selected, matchResult]);
+    if (lastTracked.current === fingerprint) return;
+    lastTracked.current = fingerprint;
+    trackEvent("parking_check_complete", {
+      parking_slug: parkingSlug,
+      car_slug: selected.slug,
+      result: matchResult.result,
+      dimension_basis: "representative",
+      compared_dimensions: matchResult.details.length,
+    });
+  }, [parkingSlug, selected, matchResult]);
+
   return (
     <div className="space-y-4">
       {/* 車種選択 */}
@@ -146,6 +164,11 @@ function InlineParkingCheckerInner({
                       key={v.slug}
                       value={v.slug}
                       onSelect={() => {
+                        trackEvent("parking_check_start", {
+                          source: "parking",
+                          parking_slug: parkingSlug,
+                          car_slug: v.slug,
+                        });
                         setSelected(v);
                         setOpen(false);
                         setSearch("");

@@ -8,6 +8,7 @@ import { ArrowLeft, Calendar, Tag } from "lucide-react";
 import { Breadcrumb } from "@/components/breadcrumb";
 import { JsonLd } from "@/components/json-ld";
 import { TableOfContents } from "@/components/table-of-contents";
+import { ArticleClickTracking } from "@/components/article-click-tracking";
 import { extractHeadings } from "@/lib/extract-headings";
 import {
   getArticleBySlug,
@@ -109,7 +110,8 @@ export default async function ArticlePage({ params }: PageProps) {
   };
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
+    <div data-article-content className="mx-auto max-w-3xl px-4 py-8 sm:px-6 lg:px-8">
+      <ArticleClickTracking articleSlug={slugStr} />
       <JsonLd data={jsonLdData} />
 
       <Breadcrumb

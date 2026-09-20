@@ -300,13 +300,7 @@ export function generateMatchSummary(
   // 必要な駐車場条件の提示
   const conditions: string[] = [];
   if (dimension.height_mm != null && dimension.height_mm > 1550) {
-    if (dimension.height_mm > 2000) {
-      conditions.push("全高2,000mm超対応");
-    } else if (dimension.height_mm > 1800) {
-      conditions.push("ハイルーフ対応（全高1,800mm以上）");
-    } else {
-      conditions.push("全高1,550mm超対応");
-    }
+    conditions.push(`全高${dimension.height_mm.toLocaleString()}mm以上対応`);
   }
   if (dimension.width_mm != null && dimension.width_mm > 1850) {
     conditions.push(`全幅${dimension.width_mm.toLocaleString()}mm以上対応`);

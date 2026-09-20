@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ComponentProps } from "react";
 import Link from "next/link";
 import { Menu, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,13 +10,12 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
-  SheetClose,
 } from "@/components/ui/sheet";
 import { HeaderSearch } from "./header-search";
 
 interface HeaderMobileNavProps {
   navLinks: readonly { href: string; label: string }[];
-  vehicles: any[];
+  vehicles: ComponentProps<typeof HeaderSearch>["vehicles"];
 }
 
 export function HeaderMobileNav({ navLinks, vehicles }: HeaderMobileNavProps) {

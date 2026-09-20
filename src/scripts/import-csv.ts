@@ -1,16 +1,16 @@
 import { parseCsvFile } from "./csv-parser";
 import { validateParkingLots } from "./csv-validator";
-import { db } from "../db";
 import {
   parkingLots,
   vehicleRestrictions,
   parkingFees,
   operatingHours,
 } from "../db/schema";
-import { eq, sql } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import type { ParsedParkingLot } from "./csv-parser";
 
 async function getExistingSlugs(): Promise<Set<string>> {
+  const { db } = await import("../db");
   const rows = await db
     .select({ slug: parkingLots.slug })
     .from(parkingLots)
@@ -19,6 +19,7 @@ async function getExistingSlugs(): Promise<Set<string>> {
 }
 
 async function deleteParkingLot(slug: string) {
+  const { db } = await import("../db");
   const lot = await db
     .select({ id: parkingLots.id })
     .from(parkingLots)
@@ -34,6 +35,7 @@ async function deleteParkingLot(slug: string) {
 }
 
 async function insertParkingLot(parking: ParsedParkingLot) {
+  const { db } = await import("../db");
   const lot = await db
     .insert(parkingLots)
     .values({
@@ -44,7 +46,7 @@ async function insertParkingLot(parking: ParsedParkingLot) {
       longitude: parking.longitude,
       parking_type: parking.parkingType,
       total_spaces: parking.totalSpaces,
-      facility_type: parking.facilityType as any,
+      facility_type: parking.facilityType as typeof parkingLots.$inferInsert.facility_type,
       source_url: parking.sourceUrl,
     })
     .returning({ id: parkingLots.id })
@@ -128,8 +130,8 @@ async function main() {
   }
 
   // 既存slug取得
-  const existingSlugs = await getExistingSlugs();
-  console.log(`📊 DB内既存駐車場: ${existingSlugs.size}件`);
+  const existingSlugs = isDryRun ? new Set<string>() : await getExistingSlugs();
+  if (!isDryRun) console.log(`📊 DB内既存駐車場: ${existingSlugs.size}件`);
 
   // バリデーション（既存slugチェックは投入時のスキップに任せる）
   const errors = validateParkingLots(lots);
@@ -143,6 +145,7 @@ async function main() {
       console.error("\nエラーを修正してください。DB投入は中止されました。");
       process.exit(1);
     }
+    process.exitCode = 1;
   } else {
     console.log("✅ バリデーション通過");
   }
@@ -154,7 +157,9 @@ async function main() {
   const updateCount = lots.filter((l) => existingSlugs.has(l.slug)).length;
 
   console.log(`\n📊 投入予定:`);
-  console.log(`  駐車場: ${lots.length}件 (新規: ${newCount}, 既存: ${updateCount})`);
+  console.log(isDryRun
+    ? `  駐車場: ${lots.length}件（DB未照合。新規・既存の内訳は未確認）`
+    : `  駐車場: ${lots.length}件 (新規: ${newCount}, 既存: ${updateCount})`);
   console.log(`  制限パターン: ${totalRestrictions}件`);
   console.log(`  料金: ${totalFees}件`);
 

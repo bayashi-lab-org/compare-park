@@ -34,7 +34,7 @@ export function NearMeButton({ className }: NearMeButtonProps) {
         console.error("Geolocation error:", error);
         alert(
           error.code === error.PERMISSION_DENIED
-            ? "位置情報の利用が許可されていません。ブラウザの設定から位置情報を許可してください。"
+            ? "現在地を取得できませんでした。位置情報の許可設定を確認するか、エリアから駐車場を探してください。"
             : "現在地の取得に失敗しました。電波状況を確認して再度お試しください。"
         );
         setLoading(false);

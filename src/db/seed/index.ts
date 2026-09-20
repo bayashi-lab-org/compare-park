@@ -461,13 +461,13 @@ const miniCountrymanBase = { ...miniBase, modelName: "MINI カントリーマン
 
 const carData: CarSeed[] = [
   // ============================================================
-  // トヨタ アルファード 40系 (2023-)
+  // トヨタ アルファード 40系 (2023-) — 2026年6月仕様・標準装備。公式諸元: https://toyota.jp/pages/contents/alphard/004_p_001/pdf/alphard_spec_202606.pdf
   // ============================================================
   { ...alphard40Base, trimName: "Z 2.5L ガソリン", driveType: "2WD", transmission: "CVT", lengthMm: 4995, widthMm: 1850, heightMm: 1935, weightKg: 2060, minTurningRadiusM: 5.9 },
-  t(alphard40Base, { trimName: "Z 2.5L ガソリン", driveType: "4WD", transmission: "CVT", lengthMm: 4995, widthMm: 1850, heightMm: 1935, weightKg: 2130, minTurningRadiusM: 5.9 }),
-  t(alphard40Base, { trimName: "Executive Lounge 2.5L HV", driveType: "2WD", transmission: "CVT", lengthMm: 4995, widthMm: 1850, heightMm: 1935, weightKg: 2090, minTurningRadiusM: 5.9 }),
-  t(alphard40Base, { trimName: "Executive Lounge 2.5L HV", driveType: "4WD", transmission: "CVT", lengthMm: 4995, widthMm: 1850, heightMm: 1935, weightKg: 2160, minTurningRadiusM: 5.9 }),
-  t(alphard40Base, { trimName: "Z PHEV", driveType: "4WD", transmission: "CVT", lengthMm: 4995, widthMm: 1850, heightMm: 1935, weightKg: 2290, minTurningRadiusM: 5.9 }),
+  t(alphard40Base, { trimName: "Z 2.5L ガソリン", driveType: "4WD", transmission: "CVT", lengthMm: 4995, widthMm: 1850, heightMm: 1935, weightKg: 2120, minTurningRadiusM: 5.9 }),
+  t(alphard40Base, { trimName: "Executive Lounge 2.5L HV", driveType: "2WD", transmission: "CVT", lengthMm: 4995, widthMm: 1850, heightMm: 1935, weightKg: 2230, minTurningRadiusM: 5.9 }),
+  t(alphard40Base, { trimName: "Executive Lounge 2.5L HV", driveType: "4WD", transmission: "CVT", lengthMm: 4995, widthMm: 1850, heightMm: 1935, weightKg: 2290, minTurningRadiusM: 5.9 }),
+  t(alphard40Base, { trimName: "Z PHEV", driveType: "4WD", transmission: "CVT", lengthMm: 4995, widthMm: 1850, heightMm: 1945, weightKg: 2440, minTurningRadiusM: 5.9 }),
 
   // ============================================================
   // トヨタ アルファード 30系後期 (2018-2022)

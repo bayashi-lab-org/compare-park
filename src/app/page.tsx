@@ -13,6 +13,7 @@ import { InstantCheckForm } from "@/components/instant-check-form";
 import { CarSearchTabs } from "@/components/car-search-tabs";
 import { JsonLd } from "@/components/json-ld";
 import { db } from "@/db";
+import { carParkingCondition } from "@/lib/queries";
 import { models, makers, dimensions, trims, phases, generations, parkingLots } from "@/db/schema";
 import { eq, count } from "drizzle-orm";
 import { TOKYO_WARD_MAP, FAQ_ITEMS } from "@/lib/constants";
@@ -57,7 +58,7 @@ export default async function Home() {
       .leftJoin(phases, eq(phases.generation_id, generations.id))
       .leftJoin(trims, eq(trims.phase_id, phases.id))
       .leftJoin(dimensions, eq(dimensions.trim_id, trims.id)),
-    db.select({ count: count() }).from(parkingLots).get(),
+    db.select({ count: count() }).from(parkingLots).where(carParkingCondition).get(),
     db.select({ count: count() }).from(models).get(),
   ]);
 

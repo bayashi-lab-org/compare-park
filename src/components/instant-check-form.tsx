@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Car, MapPin, Search, X, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { trackEvent } from "@/lib/analytics";
 
 interface Vehicle {
   slug: string;
@@ -196,10 +197,16 @@ export function InstantCheckForm({
   const handleCheck = () => {
     if (!selectedVehicle) return;
     if (selectedParking) {
+      trackEvent("parking_check_start", {
+        source: "home",
+        car_slug: selectedVehicle.slug,
+        parking_slug: selectedParking.slug,
+      });
       router.push(
         `/parking/${selectedParking.slug}?car=${selectedVehicle.slug}#checker`
       );
     } else {
+      trackEvent("car_detail_click", { source: "home", car_slug: selectedVehicle.slug });
       router.push(`/car/${selectedVehicle.slug}`);
     }
   };

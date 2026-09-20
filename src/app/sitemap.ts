@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
-import { eq, like, sql } from "drizzle-orm";
+import { eq, and, like, sql } from "drizzle-orm";
+import { carParkingCondition } from "@/lib/queries";
 import { db } from "@/db";
 import {
   models,
@@ -24,7 +25,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: BASE_URL, lastModified: now, changeFrequency: "daily", priority: 1.0 },
     { url: `${BASE_URL}/car`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
     { url: `${BASE_URL}/area`, lastModified: now, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${BASE_URL}/search`, lastModified: now, changeFrequency: "weekly", priority: 0.6 },
     { url: `${BASE_URL}/about`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
     { url: `${BASE_URL}/articles`, lastModified: now, changeFrequency: "weekly", priority: 0.6 },
     { url: `${BASE_URL}/privacy`, lastModified: "2025-01-01", changeFrequency: "yearly", priority: 0.2 },
@@ -69,10 +69,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // 駐車場ページ
-  const allLots = await db.select({ slug: parkingLots.slug }).from(parkingLots);
+  const allLots = await db.select({ slug: parkingLots.slug, updatedAt: parkingLots.updated_at }).from(parkingLots).where(carParkingCondition);
   const parkingPages: MetadataRoute.Sitemap = allLots.map((l) => ({
     url: `${BASE_URL}/parking/${l.slug}`,
-    lastModified: now,
+    lastModified: new Date(l.updatedAt.includes("T") ? l.updatedAt : `${l.updatedAt.replace(" ", "T")}Z`),
     changeFrequency: "monthly" as const,
     priority: 0.7,
   }));
@@ -100,7 +100,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           parkingLots,
           eq(vehicleRestrictions.parking_lot_id, parkingLots.id),
         )
-        .where(like(parkingLots.address, `%${w.name}%`));
+        .where(and(like(parkingLots.address, `%${w.name}%`), carParkingCondition));
       return { ward: w, count: Number(row?.cnt ?? 0) };
     }),
   );

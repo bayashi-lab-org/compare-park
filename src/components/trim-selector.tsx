@@ -3,6 +3,7 @@
 import { useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { trackEvent } from "@/lib/analytics";
 
 interface TrimData {
   generationId: number;
@@ -87,6 +88,7 @@ export function TrimSelector({
       // その世代の最初のトリムを自動選択
       const firstTrim = trims.find((t) => t.generationId === genId);
       if (!firstTrim) return;
+      trackEvent("car_trim_select", { car_slug: carSlug, generation_id: genId, trim_id: firstTrim.trimId });
       router.push(`/car/${carSlug}?gen=${genId}&trim=${firstTrim.trimId}`, {
         scroll: false,
       });
@@ -96,6 +98,7 @@ export function TrimSelector({
 
   const handleTrimClick = useCallback(
     (trimId: number) => {
+      trackEvent("car_trim_select", { car_slug: carSlug, generation_id: selectedGenerationId, trim_id: trimId });
       router.push(
         `/car/${carSlug}?gen=${selectedGenerationId}&trim=${trimId}`,
         { scroll: false }

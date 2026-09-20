@@ -11,7 +11,13 @@ import {
   parkingFees,
   operatingHours,
 } from "@/db/schema";
-import { eq, and, like, gte, sql } from "drizzle-orm";
+import { eq, and, like, notLike, gte, sql } from "drizzle-orm";
+import { NON_CAR_PARKING_TERMS } from "./parking-data-quality";
+
+// 収集済みデータに二輪専用施設が残っていても、全ての公開経路で乗用車候補から除外する。
+export const carParkingCondition = and(
+  ...NON_CAR_PARKING_TERMS.map((term) => notLike(parkingLots.name, `%${term}%`))
+);
 
 // ---------- Makers ----------
 
@@ -213,14 +219,14 @@ export async function getAllTrimsWithDimensions(modelId: number) {
 // ---------- Parking Lots ----------
 
 export async function getParkingLots() {
-  return db.select().from(parkingLots);
+  return db.select().from(parkingLots).where(carParkingCondition);
 }
 
 export async function getParkingLotBySlug(slug: string) {
   const result = await db
     .select()
     .from(parkingLots)
-    .where(eq(parkingLots.slug, slug))
+    .where(and(eq(parkingLots.slug, slug), carParkingCondition))
     .limit(1);
 
   return result[0] ?? null;
@@ -230,7 +236,7 @@ export async function getParkingLotsByWard(ward: string) {
   return db
     .select()
     .from(parkingLots)
-    .where(like(parkingLots.address, `%${ward}%`));
+    .where(and(like(parkingLots.address, `%${ward}%`), carParkingCondition));
 }
 
 // ---------- Vehicle Restrictions ----------
@@ -263,7 +269,8 @@ export async function getAllRestrictions() {
       longitude: parkingLots.longitude,
     })
     .from(vehicleRestrictions)
-    .innerJoin(parkingLots, eq(vehicleRestrictions.parking_lot_id, parkingLots.id));
+    .innerJoin(parkingLots, eq(vehicleRestrictions.parking_lot_id, parkingLots.id))
+    .where(carParkingCondition);
 }
 
 export async function getRestrictionsByWard(ward: string) {
@@ -288,7 +295,7 @@ export async function getRestrictionsByWard(ward: string) {
     })
     .from(vehicleRestrictions)
     .innerJoin(parkingLots, eq(vehicleRestrictions.parking_lot_id, parkingLots.id))
-    .where(like(parkingLots.address, `%${ward}%`));
+    .where(and(like(parkingLots.address, `%${ward}%`), carParkingCondition));
 }
 
 // ---------- Size Condition Queries ----------
@@ -327,7 +334,7 @@ export async function getParkingLotsBySizeCondition(
     })
     .from(vehicleRestrictions)
     .innerJoin(parkingLots, eq(vehicleRestrictions.parking_lot_id, parkingLots.id))
-    .where(gte(column, thresholdMm));
+    .where(and(gte(column, thresholdMm), carParkingCondition));
 
   // 駐車場ごとに重複排除（最初のrestrictionを代表値とする）
   const seen = new Set<number>();
@@ -371,7 +378,7 @@ export async function getParkingLotsByWardAndSize(
     })
     .from(vehicleRestrictions)
     .innerJoin(parkingLots, eq(vehicleRestrictions.parking_lot_id, parkingLots.id))
-    .where(and(like(parkingLots.address, `%${ward}%`), gte(column, thresholdMm)));
+    .where(and(like(parkingLots.address, `%${ward}%`), gte(column, thresholdMm), carParkingCondition));
 
   const seen = new Set<number>();
   return rows.filter((row) => {
@@ -404,7 +411,8 @@ export async function getSizeConditionCounts() {
       const rows = await db
         .select({ parking_lot_id: vehicleRestrictions.parking_lot_id })
         .from(vehicleRestrictions)
-        .where(gte(column, threshold));
+        .innerJoin(parkingLots, eq(vehicleRestrictions.parking_lot_id, parkingLots.id))
+        .where(and(gte(column, threshold), carParkingCondition));
 
       const uniqueIds = new Set(rows.map((r) => r.parking_lot_id));
       counts[`${dimension}-${threshold}`] = uniqueIds.size;
@@ -484,6 +492,7 @@ export async function getParkingLotsForSearch() {
       address: parkingLots.address,
     })
     .from(parkingLots)
+    .where(carParkingCondition)
     .orderBy(parkingLots.name);
 }
 
@@ -503,7 +512,7 @@ export async function getRestrictionsByParkingLotSlug(slug: string) {
     })
     .from(vehicleRestrictions)
     .innerJoin(parkingLots, eq(vehicleRestrictions.parking_lot_id, parkingLots.id))
-    .where(eq(parkingLots.slug, slug));
+    .where(and(eq(parkingLots.slug, slug), carParkingCondition));
 }
 
 // ---------- Parking Fees ----------
@@ -552,7 +561,7 @@ export async function getRelatedParkingLotsByWard(ward: string, excludeId: numbe
       parking_type: parkingLots.parking_type,
     })
     .from(parkingLots)
-    .where(and(like(parkingLots.address, `%${ward}%`), sql`${parkingLots.id} != ${excludeId}`))
+    .where(and(like(parkingLots.address, `%${ward}%`), sql`${parkingLots.id} != ${excludeId}`, carParkingCondition))
     .limit(8);
 }
 
@@ -575,6 +584,7 @@ export async function getNearbyParkingLots(lat: number, lng: number, radiusKm: n
     .from(parkingLots)
     .where(
       and(
+        carParkingCondition,
         sql`${parkingLots.latitude} BETWEEN ${lat - latDelta} AND ${lat + latDelta}`,
         sql`${parkingLots.longitude} BETWEEN ${lng - lngDelta} AND ${lng + lngDelta}`
       )

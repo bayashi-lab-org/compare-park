@@ -6,6 +6,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Breadcrumb } from "@/components/breadcrumb";
 import { InlineParkingChecker } from "@/components/inline-parking-checker";
+import { OfficialSiteLink } from "@/components/official-site-link";
 import { VehicleMatchList } from "@/components/vehicle-match-list";
 import type { VehicleMatchItem } from "@/components/vehicle-match-list";
 import { JsonLd } from "@/components/json-ld";
@@ -340,17 +341,10 @@ export default async function ParkingDetailPage({ params }: Props) {
               {lot.phone}
             </p>
           )}
-          {lot.url && (
+          {(lot.url || lot.source_url) && (
             <p className="flex items-center gap-2">
               <ExternalLink className="size-4 shrink-0" />
-              <a
-                href={lot.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
-                公式サイト
-              </a>
+              <OfficialSiteLink href={(lot.url || lot.source_url)!} parkingSlug={lot.slug} />
             </p>
           )}
           {lot.total_spaces != null && (
@@ -521,6 +515,7 @@ export default async function ParkingDetailPage({ params }: Props) {
               <h2 className="mb-4 text-xl font-bold">あなたの車は停められる？</h2>
               <div className="rounded-lg border bg-muted/30 p-4">
                 <InlineParkingChecker
+                  parkingSlug={lot.slug}
                   restrictions={restrictionsForChecker}
                   vehicles={vehiclesForChecker}
                 />

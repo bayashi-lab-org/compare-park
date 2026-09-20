@@ -1,4 +1,5 @@
 import type { ParsedParkingLot } from "./csv-parser";
+import { hasContaminatedAddress, isCarParkingName } from "../lib/parking-data-quality";
 
 export interface ValidationError {
   lot: string;
@@ -36,6 +37,12 @@ export function validateParkingLots(
     // 必須フィールド
     if (!lot.name) errors.push({ lot: id, field: "name", message: "名前が空です" });
     if (!lot.slug) errors.push({ lot: id, field: "slug", message: "slugが空です" });
+    if (!isCarParkingName(lot.name)) {
+      errors.push({ lot: id, field: "name", message: "二輪・駐輪施設は乗用車データへ登録できません" });
+    }
+    if (hasContaminatedAddress(lot.address)) {
+      errors.push({ lot: id, field: "address", message: "住所に案内文が混入しています" });
+    }
 
     // slug形式
     if (lot.slug && !SLUG_REGEX.test(lot.slug)) {
