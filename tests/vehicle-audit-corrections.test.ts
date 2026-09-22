@@ -28,7 +28,7 @@ test("dry-runは読み取りのみ。全訂正・追加を検出し、再実行�
   try {
     const before = (await f.client.execute("SELECT * FROM dimensions ORDER BY id")).rows;
     const preview = await correctVehicleAuditData(f.client);
-    assert.equal(preview.length, 62);
+    assert.equal(preview.length, 71);
     assert.deepEqual((await f.client.execute("SELECT * FROM dimensions ORDER BY id")).rows, before);
     const changes = await correctVehicleAuditData(f.client,true);
     assert.equal(changes.filter((c) => c.action === "withdraw").length,6);
@@ -46,6 +46,9 @@ test("dry-runは読み取りのみ。全訂正・追加を検出し、再実行�
     assert.equal((await get(4616)).height_mm,1575); // 誤検知を再適用しない
     assert.equal((await get(4498)).weight_kg,1990);
     assert.match(String((await get(4498)).specification_note),/18インチ/);
+    assert.equal((await get(4410)).weight_kg,930); // N-BOX 2代目 EX に L の重量が転記されていた
+    assert.equal((await get(4417)).weight_kg,1020);
+    assert.match(String((await get(4408)).specification_note),/2017年9月〜2020年11月の前期型/);
     const restriction = { max_length_mm:6000,max_width_mm:2300,max_height_mm:2500,max_weight_kg:3000 };
     for (const id of [4650,4663,4667,4668,4687,4681]) {
       const r = await get(id);
@@ -111,7 +114,7 @@ test("旧スキーマのdry-runは無変更。スキーマ追加も訂正失敗�
       for (const col of ["specification_note","source_url","is_published"]) await f.client.execute(`ALTER TABLE dimensions DROP COLUMN ${col}`);
       if (conflict) await f.client.execute("UPDATE dimensions SET weight_kg=9999 WHERE id=5027");
       else {
-        assert.equal((await correctVehicleAuditData(f.client)).length,62);
+        assert.equal((await correctVehicleAuditData(f.client)).length,71);
         assert.ok(!(await f.client.execute("PRAGMA table_info(dimensions)")).rows.some((r) => r.name === "is_published"));
       }
       if (conflict) {

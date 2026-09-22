@@ -1372,5 +1372,230 @@
     "source": "https://toyota.jp/pages/contents/carlineup/archive/voxy/2022-01/pdf/voxy_main_s_202201_202504.pdf",
     "note": "2022年1月〜2025年改良前・7人乗りの標準装備。メーカーオプションによる重量増加は含みません。4WD/E-Fourの全高は1,925mmです。",
     "trimAfter": "S-Z HV（7人乗り・標準装備）"
+  },
+  {
+    "auditId": 4408,
+    "maker": "honda",
+    "model": "n-box",
+    "generation": "2代目 JF3/JF4 (2017-2023)",
+    "phase": "前期型",
+    "trim": "L",
+    "drive": "2WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 3395,
+      "width_mm": 1475,
+      "height_mm": 1790,
+      "weight_kg": 900
+    },
+    "after": {
+      "length_mm": 3395,
+      "width_mm": 1475,
+      "height_mm": 1790,
+      "weight_kg": 890
+    },
+    "published": true,
+    "source": "https://www.honda.co.jp/auto-archive/nbox/2019/common/pdf/nbox_spec_list.pdf",
+    "note": "2017年9月〜2020年11月の前期型、G・L Honda SENSING（ベンチシート・14インチタイヤ）のFF車の値。特別仕様車やメーカーオプション装着時の重量は含みません。"
+  },
+  {
+    "auditId": 4409,
+    "maker": "honda",
+    "model": "n-box",
+    "generation": "2代目 JF3/JF4 (2017-2023)",
+    "phase": "前期型",
+    "trim": "L",
+    "drive": "4WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 3395,
+      "width_mm": 1475,
+      "height_mm": 1815,
+      "weight_kg": 960
+    },
+    "after": {
+      "length_mm": 3395,
+      "width_mm": 1475,
+      "height_mm": 1815,
+      "weight_kg": 950
+    },
+    "published": true,
+    "source": "https://www.honda.co.jp/auto-archive/nbox/2019/common/pdf/nbox_spec_list.pdf",
+    "note": "2017年9月〜2020年11月の前期型、G・L Honda SENSING（ベンチシート・14インチタイヤ）の4WD車の値。特別仕様車やメーカーオプション装着時の重量は含みません。"
+  },
+  {
+    "auditId": 4410,
+    "maker": "honda",
+    "model": "n-box",
+    "generation": "2代目 JF3/JF4 (2017-2023)",
+    "phase": "前期型",
+    "trim": "EX",
+    "drive": "2WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 3395,
+      "width_mm": 1475,
+      "height_mm": 1790,
+      "weight_kg": 900
+    },
+    "after": {
+      "length_mm": 3395,
+      "width_mm": 1475,
+      "height_mm": 1790,
+      "weight_kg": 930
+    },
+    "published": true,
+    "source": "https://www.honda.co.jp/auto-archive/nbox/2019/common/pdf/nbox_spec_list.pdf",
+    "note": "2017年9月〜2020年11月の前期型、G・EX Honda SENSING（スーパースライドシート・14インチタイヤ）のFF車の値。特別仕様車やメーカーオプション装着時の重量は含みません。"
+  },
+  {
+    "auditId": 4411,
+    "maker": "honda",
+    "model": "n-box",
+    "generation": "2代目 JF3/JF4 (2017-2023)",
+    "phase": "前期型",
+    "trim": "EX",
+    "drive": "4WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 3395,
+      "width_mm": 1475,
+      "height_mm": 1815,
+      "weight_kg": 960
+    },
+    "after": {
+      "length_mm": 3395,
+      "width_mm": 1475,
+      "height_mm": 1815,
+      "weight_kg": 990
+    },
+    "published": true,
+    "source": "https://www.honda.co.jp/auto-archive/nbox/2019/common/pdf/nbox_spec_list.pdf",
+    "note": "2017年9月〜2020年11月の前期型、G・EX Honda SENSING（スーパースライドシート・14インチタイヤ）の4WD車の値。特別仕様車やメーカーオプション装着時の重量は含みません。"
+  },
+  {
+    "auditId": 4412,
+    "maker": "honda",
+    "model": "n-box",
+    "generation": "2代目 JF3/JF4 (2017-2023)",
+    "phase": "前期型",
+    "trim": "Custom L",
+    "drive": "2WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 3395,
+      "width_mm": 1475,
+      "height_mm": 1790,
+      "weight_kg": 910
+    },
+    "after": {
+      "length_mm": 3395,
+      "width_mm": 1475,
+      "height_mm": 1790,
+      "weight_kg": 900
+    },
+    "published": true,
+    "source": "https://www.honda.co.jp/auto-archive/nbox/2019/common/pdf/nbox_spec_list.pdf",
+    "note": "2017年9月〜2020年11月の前期型、N-BOX Custom G・L Honda SENSING（ベンチシート・14インチタイヤ）のFF車の値。メーカーオプション装着時の重量は含みません。"
+  },
+  {
+    "auditId": 4414,
+    "maker": "honda",
+    "model": "n-box",
+    "generation": "2代目 JF3/JF4 (2017-2023)",
+    "phase": "前期型",
+    "trim": "Custom L ターボ",
+    "drive": "2WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 3395,
+      "width_mm": 1475,
+      "height_mm": 1790,
+      "weight_kg": 920
+    },
+    "after": {
+      "length_mm": 3395,
+      "width_mm": 1475,
+      "height_mm": 1790,
+      "weight_kg": 930
+    },
+    "published": true,
+    "source": "https://www.honda.co.jp/auto-archive/nbox/2019/common/pdf/nbox_spec_list.pdf",
+    "note": "2017年9月〜2020年11月の前期型、N-BOX Custom G・L ターボ Honda SENSING（ベンチシート・15インチタイヤ）のFF車の値。メーカーオプション装着時の重量は含みません。"
+  },
+  {
+    "auditId": 4415,
+    "maker": "honda",
+    "model": "n-box",
+    "generation": "2代目 JF3/JF4 (2017-2023)",
+    "phase": "前期型",
+    "trim": "Custom L ターボ",
+    "drive": "4WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 3395,
+      "width_mm": 1475,
+      "height_mm": 1815,
+      "weight_kg": 980
+    },
+    "after": {
+      "length_mm": 3395,
+      "width_mm": 1475,
+      "height_mm": 1815,
+      "weight_kg": 990
+    },
+    "published": true,
+    "source": "https://www.honda.co.jp/auto-archive/nbox/2019/common/pdf/nbox_spec_list.pdf",
+    "note": "2017年9月〜2020年11月の前期型、N-BOX Custom G・L ターボ Honda SENSING（ベンチシート・15インチタイヤ）の4WD車の値。メーカーオプション装着時の重量は含みません。"
+  },
+  {
+    "auditId": 4416,
+    "maker": "honda",
+    "model": "n-box",
+    "generation": "2代目 JF3/JF4 (2017-2023)",
+    "phase": "前期型",
+    "trim": "Custom EX ターボ",
+    "drive": "2WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 3395,
+      "width_mm": 1475,
+      "height_mm": 1790,
+      "weight_kg": 930
+    },
+    "after": {
+      "length_mm": 3395,
+      "width_mm": 1475,
+      "height_mm": 1790,
+      "weight_kg": 960
+    },
+    "published": true,
+    "source": "https://www.honda.co.jp/auto-archive/nbox/2019/common/pdf/nbox_spec_list.pdf",
+    "note": "2017年9月〜2020年11月の前期型、N-BOX Custom G・EX ターボ Honda SENSING（スーパースライドシート・15インチタイヤ）のFF車の値。メーカーオプション装着時の重量は含みません。"
+  },
+  {
+    "auditId": 4417,
+    "maker": "honda",
+    "model": "n-box",
+    "generation": "2代目 JF3/JF4 (2017-2023)",
+    "phase": "前期型",
+    "trim": "Custom EX ターボ",
+    "drive": "4WD",
+    "transmission": "CVT",
+    "before": {
+      "length_mm": 3395,
+      "width_mm": 1475,
+      "height_mm": 1815,
+      "weight_kg": 990
+    },
+    "after": {
+      "length_mm": 3395,
+      "width_mm": 1475,
+      "height_mm": 1815,
+      "weight_kg": 1020
+    },
+    "published": true,
+    "source": "https://www.honda.co.jp/auto-archive/nbox/2019/common/pdf/nbox_spec_list.pdf",
+    "note": "2017年9月〜2020年11月の前期型、N-BOX Custom G・EX ターボ Honda SENSING（スーパースライドシート・15インチタイヤ）の4WD車の値。メーカーオプション装着時の重量は含みません。"
   }
 ]
